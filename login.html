@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTAR E-Sports Club - Login</title>
+    <!-- 1. Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 2. External Stylesheet from Role A -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- Login Page Styles: Sci-fi Glassmorphism theme (matches tournaments page) --- */
+        body {
+            background-color: #0b0c10;
+            background-image: radial-gradient(circle at top right, rgba(0, 240, 255, 0.06), transparent 40%),
+                radial-gradient(circle at bottom left, rgba(201, 138, 68, 0.06), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .auth-panel {
+            background: rgba(20, 23, 34, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-input {
+            background-color: rgba(30, 36, 52, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50rem;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input::placeholder {
+            color: #7d8393;
+        }
+
+        .auth-input:focus {
+            background-color: rgba(40, 46, 62, 0.9);
+            border-color: var(--neon-cyan, #00f0ff);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        #togglePassword {
+            color: #a0a5b5;
+            transition: color 0.2s ease;
+        }
+
+        #togglePassword:hover {
+            color: var(--neon-cyan, #00f0ff);
+        }
+
+        .btn-outline-neon {
+            background: transparent;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            color: var(--neon-cyan, #00f0ff);
+            transition: all 0.25s ease;
+        }
+
+        .btn-outline-neon:hover {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--neon-cyan, #00f0ff);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cool line animated background -->
+    <div id="vanta-bg"></div>
+
+    <!-- ==========================================
+          [Shared Navbar]
+          ========================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">UTAR <span>E-SPORTS</span></a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teams.html">Our Teams</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="schedule.html">Schedule</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tournaments.html">Tournaments</a>
+                    </li>
+                </ul>
+                <div class="d-flex gap-2 ms-auto mt-2 mt-lg-0">
+                    <a class="btn btn-cyber btn-sm active" href="login.html" id="nav-login-btn">
+                        <i class="fa-solid fa-user me-1"></i> Login
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="#" id="nav-logout-btn" style="display:none;">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- ==========================================
+          [Core Content Area - Login Form]
+          ========================================== -->
+    <main class="container pt-5 mt-5 mb-5">
+        <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+                <!-- Glassmorphism Card (Matches Tournaments visual style) -->
+                <div class="auth-panel">
+
+                    <!-- Header Section -->
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-gamepad fs-2 mb-2" style="color: var(--neon-cyan, #00f0ff);"></i>
+                        <h2 class="fw-bolder text-white mb-1">Welcome Back</h2>
+                        <p class="mb-0" style="color:#a0a5b5; font-size:0.9rem;">Login to join tournaments and track
+                            your matches</p>
+                    </div>
+
+                    <!-- Standard Login Form -->
+                    <form id="loginForm">
+
+                        <!-- Username Input -->
+                        <div class="mb-3">
+                            <input type="text" class="form-control auth-input px-4 py-3" id="username"
+                                placeholder="Your username" required>
+                        </div>
+
+                        <!-- Password Input with password visibility toggle function -->
+                        <div class="mb-4 position-relative">
+                            <input type="password" class="form-control auth-input px-4 py-3" id="password"
+                                placeholder="Your password" required minlength="8">
+                            <i class="fa-solid fa-eye position-absolute top-50 end-0 translate-middle-y me-4"
+                                style="cursor: pointer;" id="togglePassword"></i>
+                        </div>
+
+                        <!-- LOGIN Button -->
+                        <button type="submit" class="btn w-100 py-3 mb-3 fw-bold" id="loginBtn"
+                            style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 50rem; font-weight: 800; font-size: 14px; letter-spacing: 0.5px; transition: background-color 0.3s ease;">LOGIN</button>
+
+                        <!-- CREATE ACCOUNT Button -->
+                        <a href="signup.html" class="btn btn-outline-neon w-100 py-3 mb-4 d-block text-center"
+                            style="border-radius: 50rem; font-weight: 800; font-size: 13px; letter-spacing: 0.5px; text-decoration: none;">CREATE
+                            AN ACCOUNT</a>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- [Shared Footer] -->
+    <footer class="cyber-footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3" style="letter-spacing: 1px;">UTAR E-SPORTS CLUB</h5>
+                    <p class="small">The ultimate hub for competitive gamers at Universiti Tunku Abdul Rahman. Join us
+                        to unleash your potential, compete in tournaments, and connect with fellow gamers.</p>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="index.html"><i class="fa-solid fa-angle-right me-1"></i> Home</a></li>
+                                <li><a href="about.html"><i class="fa-solid fa-angle-right me-1"></i> About</a></li>
+                                <li><a href="teams.html"><i class="fa-solid fa-angle-right me-1"></i> Teams</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="schedule.html"><i class="fa-solid fa-angle-right me-1"></i> Schedule</a>
+                                </li>
+                                <li><a href="news.html"><i class="fa-solid fa-angle-right me-1"></i> News</a></li>
+                                <li><a href="tournaments.html"><i class="fa-solid fa-angle-right me-1"></i> Join Us</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Follow Our Socials</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="https://www.facebook.com/UTARnet" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/utarnet1/" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://discord.com/invite/vMrrDVP" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.youtube.com/@UtarEduMy" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                    <p class="small mb-0">
+                        <i class="fa-solid fa-envelope me-2"></i>
+                        <span class="text-muted">esportclub.utar@gmail.com</span>
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 UTAR E-Sports Club. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small text-muted">UCCD2323 Front-End Web Development Assignment</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- [Scripts Bundle] -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- 4. Your Custom Authentication JS File for Cookies -->
+    <script src="js/auth.js"></script>
+
+    <!-- Cool line animated background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x004d44,
+            backgroundColor: 0x0b0c10
+        });
+    </script>
+
+</body>
+
+</html>

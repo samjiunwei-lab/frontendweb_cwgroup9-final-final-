@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">UTAR E-Sports Club - tournaments-detail</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global external CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #0b0c10;
+            background-image: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(201, 138, 68, 0.05), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(20, 23, 34, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-tile {
+            background: rgba(30, 36, 52, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 16px 18px;
+            height: 100%;
+        }
+        .info-tile .info-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8b92a5;
+            margin-bottom: 6px;
+        }
+        .info-tile .info-value {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.35;
+        }
+        .info-tile .info-sub {
+            color: #a0a5b5;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .host-tile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .host-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.15);
+            flex-shrink: 0;
+        }
+
+        /* Top tabs (Overview / Participants / etc.) */
+        .top-tabs {
+            display: flex;
+            gap: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-top: 18px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .top-tabs::-webkit-scrollbar { display: none; }
+        .top-tab {
+            background: none;
+            border: none;
+            color: #8b92a5;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0 0 14px 0;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .top-tab:hover { color: #fff; }
+        .top-tab.active {
+            color: #fff;
+            border-color: var(--neon-cyan, #00f0ff);
+        }
+
+        /* Pill-shaped tabs for Details, Rules, Prizes, Schedule, Contact */
+        .pill-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: rgba(20, 23, 34, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 50rem;
+            padding: 6px;
+            margin-bottom: 24px;
+        }
+        .pill-tab {
+            background: none;
+            border: none;
+            color: #a0a5b5;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 8px 20px;
+            border-radius: 50rem;
+            transition: all 0.2s ease;
+        }
+        .pill-tab:hover { color: #fff; }
+        .pill-tab.active {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .detail-banner {
+            width: 100%;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            max-height: 420px;
+            object-fit: cover;
+        }
+
+        .sub-panel { display: none; }
+        .sub-panel.active { display: block; }
+
+        .rules-list li, .schedule-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: #d3d6e0;
+        }
+        .rules-list li:last-child, .schedule-list li:last-child { border-bottom: none; }
+
+        .prize-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: rgba(30, 36, 52, 0.5);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .prize-rank { color: #fff; font-weight: 700; }
+        .prize-amount { color: #c98a44; font-weight: 700; }
+
+        /* Right-side registration panel */
+        .status-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            border-radius: 50rem;
+        }
+        .status-open { background: rgba(0, 240, 255, 0.15); color: var(--neon-cyan, #00f0ff); }
+        .status-closed { background: rgba(255, 51, 102, 0.15); color: #ff3366; }
+        .status-count { background: rgba(255,255,255,0.06); color: #a0a5b5; }
+
+        .account-panel {
+            background: linear-gradient(135deg, rgba(0,240,255,0.08), rgba(201,138,68,0.08));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 22px;
+        }
+        .btn-neon {
+            background: linear-gradient(90deg, #00c2d1, #00f0ff);
+            border: none;
+            color: #06141a;
+            font-weight: 700;
+            border-radius: 50rem;
+            padding: 10px 0;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        .btn-neon:hover { filter: brightness(1.1); color: #06141a; }
+        .btn-neon:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Joined status for the Join button: Change to outline style, show "Cancel" on hover */
+        .btn-neon.btn-neon-joined {
+            background: transparent;
+            border: 1px solid rgba(0, 240, 255, 0.5);
+            color: var(--neon-cyan, #00f0ff);
+        }
+        .btn-neon.btn-neon-joined:hover {
+            background: rgba(255, 51, 102, 0.1);
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+
+        /* Redirect Intent: Briefly highlight the Join button after the user logs in and is redirected back here to guide them */
+        @keyframes joinPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.6); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 240, 255, 0); }
+        }
+        .join-highlight {
+            animation: joinPulse 0.8s ease-out 3;
+        }
+
+        .join-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .join-step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .back-link {
+            color: #a0a5b5;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 18px;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+     <!--cool line background-->
+    <div id="vanta-bg"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">UTAR <span>E-SPORTS</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="teams.html">Our Teams</a></li>
+                    <li class="nav-item"><a class="nav-link" href="schedule.html">Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link" href="news.html">News</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="tournaments.html">Tournaments</a></li>
+                </ul>
+                <div class="d-flex gap-2 ms-auto mt-2 mt-lg-0">
+                    <a href="login.html" class="btn btn-cyber btn-sm" id="nav-login-btn">
+                        <i class="fa-solid fa-user me-1"></i> Login
+                    </a>
+                    <a href="#" id="nav-logout-btn" class="btn btn-danger btn-sm" style="display:none;">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container pt-1 mt-1 mb-1">
+
+        <a href="tournaments.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Tournaments</a>
+
+        <div class="row g-4">
+            <!-- Main content area -->
+            <div class="col-lg-8">
+
+                <div class="glass-panel mb-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <div class="tourney-meta-top mb-1" id="detailGameLabel" style="font-size:0.75rem;color:#8b92a5;text-transform:uppercase;letter-spacing:0.5px;"></div>
+                            <h2 class="fw-bold text-white mb-0" id="detailTitle">Loading tournament...</h2>
+                        </div>
+                        <div class="text-end">
+                            <div style="color:#c98a44; font-weight:700; font-size:1.1rem;" id="detailPrize"></div>
+                        </div>
+                    </div>
+
+                    <div class="top-tabs">
+                        <button class="top-tab active" data-top-tab="overview">Overview</button>
+                        <button class="top-tab" data-top-tab="participants">Participants</button>
+                        <button class="top-tab" data-top-tab="brackets">Brackets</button>
+                        <button class="top-tab" data-top-tab="media">Media</button>
+                        <button class="top-tab" data-top-tab="stats">Stats</button>
+                        <button class="top-tab" data-top-tab="announcements">Announcements</button>
+                    </div>
+                </div>
+
+                <!-- Overview content -->
+                <div id="topPanel-overview">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6 col-md-3">
+                            <div class="info-tile">
+                                <div class="info-label">Game</div>
+                                <div class="info-value" id="infoGame">—</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="info-tile">
+                                <div class="info-label">Date &amp; Time</div>
+                                <div class="info-value" id="infoDate">—</div>
+                                <div class="info-sub" id="infoTime">—</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="info-tile">
+                                <div class="info-label">Format</div>
+                                <div class="info-value" id="infoFormat">—</div>
+                                <div class="info-sub" id="infoFormatSub">—</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="info-tile">
+                                <div class="info-label">Game Map &amp; Type</div>
+                                <div class="info-value" id="infoMap">—</div>
+                                <div class="info-sub" id="infoMapSub">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <div class="info-tile host-tile">
+                                <img class="host-logo" id="hostLogo" src="" alt="Host">
+                                <div class="flex-grow-1">
+                                    <div class="info-value" id="hostName">—</div>
+                                    <div class="info-sub" id="hostFollowers">—</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-tile">
+                                <div class="info-label">Region</div>
+                                <div class="info-value" id="infoRegion">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pill-tabs">
+                        <button class="pill-tab active" data-pill-tab="details">Details</button>
+                        <button class="pill-tab" data-pill-tab="rules">Rules</button>
+                        <button class="pill-tab" data-pill-tab="prizes">Prizes</button>
+                        <button class="pill-tab" data-pill-tab="schedule">Schedule</button>
+                        <button class="pill-tab" data-pill-tab="contact">Contact</button>
+                    </div>
+
+                    <div class="sub-panel active" id="subPanel-details">
+                        <img class="detail-banner" id="bannerImg" src="" alt="Tournament banner">
+                        <p style="color:#c3c7d3; line-height:1.8;" id="detailDescription"></p>
+                    </div>
+
+                    <div class="sub-panel" id="subPanel-rules">
+                        <ul class="list-unstyled rules-list" id="rulesList"></ul>
+                    </div>
+
+                    <div class="sub-panel" id="subPanel-prizes">
+                        <div id="prizesList"></div>
+                    </div>
+
+                    <div class="sub-panel" id="subPanel-schedule">
+                        <ul class="list-unstyled schedule-list" id="scheduleList"></ul>
+                    </div>
+
+                    <div class="sub-panel" id="subPanel-contact">
+                        <div class="info-tile">
+                            <div class="info-label">Organizer Contact</div>
+                            <div class="info-value" id="contactHost">—</div>
+                            <div class="info-sub" id="contactEmail">—</div>
+                            <div class="info-sub" id="contactDiscord">—</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Placeholder content for other top tabs -->
+                <div id="topPanel-placeholder" class="glass-panel text-center py-5" style="display:none;">
+                    <i class="fa-solid fa-hourglass-half fs-1 mb-3" style="color:#a0a5b5;"></i>
+                    <h5 class="text-white" id="placeholderTitle">Coming Soon</h5>
+                    <p class="mb-0" style="color:#a0a5b5;">This section will be available closer to the tournament date.</p>
+                </div>
+
+            </div>
+
+            <!-- Sidebar registration panel -->
+            <div class="col-lg-4">
+                <div class="d-flex gap-2 mb-3 flex-wrap">
+                    <span class="status-badge status-open" id="statusBadge">REGISTRATION OPEN</span>
+                    <span class="status-badge status-count" id="playersBadge">0 PLAYERS REGISTERED</span>
+                </div>
+
+                <div class="account-panel mb-3" id="accountPanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold text-white" style="font-size:0.85rem; letter-spacing:0.5px;">CREATE ACCOUNT</span>
+                        <i class="fa-regular fa-circle-question" style="color:#a0a5b5;"></i>
+                    </div>
+                    <a href="signup.html" id="accountSignupLink" class="btn btn-neon mb-2 d-inline-block text-decoration-none">Create Account</a>
+                    <div class="text-center">
+                        <a href="login.html" id="accountLoginLink" style="color: var(--neon-cyan, #00f0ff); font-size:0.85rem; text-decoration:none;">Login</a>
+                    </div>
+                </div>
+
+                <!-- Welcome box shown for logged-in users, replacing the Create Account/Login panel -->
+                <div class="glass-panel mb-3" id="welcomeBox" style="display:none; padding:18px 22px;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-check" style="color: var(--neon-cyan, #00f0ff);"></i>
+                        <span class="text-white" style="font-size:0.9rem;">Welcome back, <strong id="welcomeName">Gamer</strong>! <span id="welcomeMsg">You're logged in — join the tournament below.</span></span>
+                    </div>
+                </div>
+
+                <div class="glass-panel">
+                    <div class="fw-bold text-white mb-3" style="font-size:0.85rem; letter-spacing:0.5px;">1. JOIN</div>
+                    <div class="join-step">
+                        <div class="join-step-num">1</div>
+                        <div class="flex-grow-1">
+                            <div class="text-white fw-semibold mb-1">Join Tournament</div>
+                            <p style="font-size:0.8rem; color:#a0a5b5;">After joining, you will have to check-in just before the tournament start time in order to play.</p>
+                            <button class="btn btn-neon mt-2" id="joinBtn">Join Tournament</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+     <!-- [Shared Footer] -->
+    <footer class="cyber-footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3" style="letter-spacing: 1px;">UTAR E-SPORTS CLUB</h5>
+                    <p class="small">The ultimate hub for competitive gamers at Universiti Tunku Abdul Rahman. Join us
+                        to unleash your potential, compete in tournaments, and connect with fellow gamers.</p>
+                </div>
+    
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="index.html"><i class="fa-solid fa-angle-right me-1"></i> Home</a></li>
+                                <li><a href="about.html"><i class="fa-solid fa-angle-right me-1"></i> About</a></li>
+                                <li><a href="teams.html"><i class="fa-solid fa-angle-right me-1"></i> Teams</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="schedule.html"><i class="fa-solid fa-angle-right me-1"></i> Schedule</a></li>
+                                <li><a href="news.html"><i class="fa-solid fa-angle-right me-1"></i> News</a></li>
+                                <li><a href="tournaments.html"><i class="fa-solid fa-angle-right me-1"></i> Join Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Follow Our Socials</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="https://www.facebook.com/UTARnet" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/utarnet1/" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://discord.com/invite/vMrrDVP" target="_blank" rel="noopener noreferrer" class="fs-4"><i 
+                                class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.youtube.com/@UtarEduMy" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                <p class="small mb-0">
+                    <i class="fa-solid fa-envelope me-2"></i>
+                    <span class="text-muted">esportclub.utar@gmail.com</span>
+                </p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 UTAR E-Sports Club. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small text-muted">UCCD2323 Front-End Web Development Assignment</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // ==========================================
+        // Tournament data (For demo purposes. In a real project, this can be fetched from a backend API)
+        // ==========================================
+        const tournamentsData = {
+            "pubg-terengganu": {
+                game: "PUBG Mobile", gameLabel: "PUBG MOBILE",
+                title: "MEL26 State League - PUBGM Terengganu",
+                prize: "RM 3,000 Prize Pool",
+                date: "30 August 2026", time: "12:00 AM +08",
+                format: "4 vs 4", formatSub: "Squad registration allowed",
+                map: "Erangel", mapSub: "Classic Battle Royale",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "Terengganu, Malaysia",
+                banner: "images/pubg-1.jpg",
+                description: "The Terengganu leg of the MEL26 State League brings together the state's top PUBG Mobile squads for a shot at qualifying for the national finals. Teams battle across multiple maps in a points-based format, with the top squads advancing to the playoffs.",
+                rules: [
+                    "Each squad must consist of exactly 4 registered players plus 1 optional substitute.",
+                    "Teaming with opponents or third-party assistance results in immediate disqualification.",
+                    "All players must check in at least 30 minutes before the scheduled start time.",
+                    "Emulator use is strictly prohibited; mobile devices only.",
+                    "Match results are final once confirmed by the tournament admin."
+                ],
+                prizes: [ ["1st Place", "RM 1,500"], ["2nd Place", "RM 900"], ["3rd Place", "RM 600"] ],
+                schedule: [
+                    "Registration closes — 29 August 2026, 11:59 PM",
+                    "Check-in opens — 30 August 2026, 11:30 PM",
+                    "Group Stage — 30 August 2026, 12:00 AM",
+                    "Finals — 30 August 2026, 8:00 PM"
+                ],
+                registered: 67, capacity: 128, status: "open",
+                contactEmail: "esports.terengganu@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+            "pubg-sarawak": {
+                game: "PUBG Mobile", gameLabel: "PUBG MOBILE",
+                title: "MEL26 State League - PUBGM Sarawak",
+                prize: "RM 3,000 Prize Pool",
+                date: "21 August 2026", time: "12:00 AM +08",
+                format: "4 vs 4", formatSub: "Squad registration allowed",
+                map: "Miramar", mapSub: "Classic Battle Royale",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "Sarawak, Malaysia",
+                banner: "images/pubg-2.jpg",
+                description: "Sarawak squads compete for state supremacy in this leg of the MEL26 State League. With 45 teams already locked in, expect a fiercely contested points race across the group stage before the top rosters meet in the grand finals.",
+                rules: [
+                    "Each squad must consist of exactly 4 registered players plus 1 optional substitute.",
+                    "Teaming with opponents or third-party assistance results in immediate disqualification.",
+                    "All players must check in at least 30 minutes before the scheduled start time.",
+                    "Emulator use is strictly prohibited; mobile devices only.",
+                    "Match results are final once confirmed by the tournament admin."
+                ],
+                prizes: [ ["1st Place", "RM 1,500"], ["2nd Place", "RM 900"], ["3rd Place", "RM 600"] ],
+                schedule: [
+                    "Registration closes — 18 August 2026, 11:59 PM",
+                    "Check-in opens — 21 August 2026, 11:30 PM",
+                    "Group Stage — 21 August 2026, 12:00 AM",
+                    "Finals — 23 August 2026, 8:00 PM"
+                ],
+                registered: 45, capacity: 128, status: "open",
+                contactEmail: "esports.sarawak@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+            "pubg-sabah": {
+                game: "PUBG Mobile", gameLabel: "PUBG MOBILE",
+                title: "MEL26 State League - PUBGM Sabah",
+                prize: "RM 3,000 Prize Pool",
+                date: "11 August 2026", time: "12:00 AM +08",
+                format: "4 vs 4", formatSub: "Squad registration allowed",
+                map: "Sanhok", mapSub: "Classic Battle Royale",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "Sabah, Malaysia",
+                banner: "images/pubg-3.webp",
+                description: "Registration is almost full for the Sabah leg of the MEL26 State League. With 112 of 128 slots taken, this is shaping up to be the most competitive regional bracket yet, with several returning champion squads confirmed.",
+                rules: [
+                    "Each squad must consist of exactly 4 registered players plus 1 optional substitute.",
+                    "Teaming with opponents or third-party assistance results in immediate disqualification.",
+                    "All players must check in at least 30 minutes before the scheduled start time.",
+                    "Emulator use is strictly prohibited; mobile devices only.",
+                    "Match results are final once confirmed by the tournament admin."
+                ],
+                prizes: [ ["1st Place", "RM 1,500"], ["2nd Place", "RM 900"], ["3rd Place", "RM 600"] ],
+                schedule: [
+                    "Registration closes — 08 August 2026, 11:59 PM",
+                    "Check-in opens — 11 August 2026, 11:30 PM",
+                    "Group Stage — 11 August 2026, 12:00 AM",
+                    "Finals — 13 August 2026, 8:00 PM"
+                ],
+                registered: 112, capacity: 128, status: "open",
+                contactEmail: "esports.sabah@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+            "lol-semifinals": {
+                game: "League of Legends", gameLabel: "LEAGUE OF LEGENDS",
+                title: "UTAR Collegiate Championship - Semi Finals",
+                prize: "RM 5,000 Prize Pool",
+                date: "05 September 2026", time: "2:00 PM +08",
+                format: "5 vs 5", formatSub: "Team registration only",
+                map: "Summoner's Rift", mapSub: "Tournament Draft",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "National (Malaysia)",
+                banner: "images/lol-1.jpg",
+                description: "The semi-final stage of the UTAR Collegiate Championship — the top 16 teams from the regular season face off in a best-of-three bracket. Registration is full; spectator seating and livestream details will be announced closer to the date.",
+                rules: [
+                    "Rosters are locked; no substitutions after the group stage without admin approval.",
+                    "Matches are best-of-three, tournament draft pick/ban.",
+                    "Each team must have a designated team captain present in the pre-match lobby.",
+                    "Disconnects are handled per official Riot tournament ruleset pause procedures.",
+                    "Unsportsmanlike conduct may result in forfeiture of the match."
+                ],
+                prizes: [ ["1st Place", "RM 2,500"], ["2nd Place", "RM 1,500"], ["3rd Place", "RM 1,000"] ],
+                schedule: [
+                    "Team check-in — 05 September 2026, 1:00 PM",
+                    "Semi Final 1 — 05 September 2026, 2:00 PM",
+                    "Semi Final 2 — 05 September 2026, 5:00 PM",
+                    "Grand Final — 12 September 2026, 3:00 PM"
+                ],
+                registered: 16, capacity: 16, status: "closed",
+                contactEmail: "esports.lol@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+            "lol-World Championship 2026":{
+                game: "League of Legends", gameLabel: "LEAGUE OF LEGENDS",
+                title: "League of Legends World Championship 2026",
+                prize: "RM 88,888 Prize Pool",
+                date: "03 December 2026", time: "8:00 PM +08",
+                format: "5 vs 5", formatSub: "Team registration only",
+                map: "Summoner's Rift", mapSub: "Tournament Draft",
+                host: "Riot Games", hostFollowers: "3 Billion Followers",
+                hostLogo: "images/lollogo-2.png",
+                region: "World (Singapore)",
+                banner: "images/lol-2.webp",
+                description: "The League of Legends World Championship 2026 of the Riot Games Championship — the top 16 teams from the regular season face off in a best-of-three bracket. Registration is full; spectator seating and livestream details will be announced closer to the date.",
+                rules: [
+                    "Rosters are locked; no substitutions after the group stage without admin approval.",
+                    "Matches are best-of-three, tournament draft pick/ban.",
+                    "Each team must have a designated team captain present in the pre-match lobby.",
+                    "Disconnects are handled per official Riot tournament ruleset pause procedures.",
+                    "Unsportsmanlike conduct may result in forfeiture of the match."
+                ],
+                prizes: [ ["1st Place", "RM 58,888"], ["2nd Place", "RM 20,000"], ["3rd Place", "RM 10,000"] ],
+                schedule: [
+                    "Team check-in — 03 December 2026, 18:00 PM",
+                    "Semi Final 1 — 03 December 2026, 20:00 PM",
+                    "Semi Final 2 — 03 December 2026, 22:00 PM",
+                    "Grand Final — 09 December 2026, 3:00 PM"
+                ],
+                registered: 160, capacity: 160, status: "closed",
+                contactEmail: "riot.lol@gmail.com", contactDiscord: "discord.gg/Riot-Games"
+            },
+            "valorant-groupa": {
+                game: "VALORANT", gameLabel: "VALORANT",
+                title: "VCT Campus Open - Group Stage A",
+                prize: "RM 1,500 Prize Pool",
+                date: "12 September 2026", time: "10:00 AM +08",
+                format: "5 vs 5", formatSub: "Team registration only",
+                map: "Ascent", mapSub: "Standard Competitive",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "Klang Valley, Malaysia",
+                banner: "images/valorant-1.jpg",
+                description: "Group Stage A of the VCT Campus Open kicks off the road to the national campus finals. Eight teams are already confirmed, competing round-robin for the two qualification spots into the playoff bracket.",
+                rules: [
+                    "Each roster consists of 5 starters and up to 2 substitutes.",
+                    "Maps are picked using standard competitive veto procedure.",
+                    "All players must be currently enrolled university students with valid ID.",
+                    "Cheating software or hardware of any kind results in a permanent ban.",
+                    "Match disputes must be raised within 10 minutes of the match ending."
+                ],
+                prizes: [ ["1st Place", "RM 800"], ["2nd Place", "RM 450"], ["3rd Place", "RM 250"] ],
+                schedule: [
+                    "Registration closes — 08 September 2026, 11:59 PM",
+                    "Check-in opens — 12 September 2026, 9:30 AM",
+                    "Round Robin — 12 September 2026, 10:00 AM",
+                    "Playoffs — 19 September 2026, 10:00 AM"
+                ],
+                registered: 24, capacity: 32, status: "open",
+                contactEmail: "esports.valorant@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+            "mlbb-clash": {
+                game: "Mobile Legends: Bang Bang", gameLabel: "MOBILE LEGENDS",
+                title: "Moonton Student Clash Night",
+                prize: "RM 1,000 Prize Pool",
+                date: "28 August 2026", time: "8:00 PM +08",
+                format: "5 vs 5", formatSub: "Team registration only",
+                map: "Land of Dawn", mapSub: "Ranked Rules",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "National (Malaysia)",
+                banner: "images/mlbb-1.jpg",
+                description: "A single-night knockout clash for Mobile Legends squads, run in partnership with Moonton's student community program. Fast-paced, single-elimination format designed to crown a champion in one evening.",
+                rules: [
+                    "Each team fields 5 starters with 1 optional substitute.",
+                    "Single elimination — one loss and you're out.",
+                    "Draft pick mode, mirror match rule applies.",
+                    "Players must join the official Discord voice channel during their match.",
+                    "No-shows after a 10-minute grace period forfeit the match."
+                ],
+                prizes: [ ["1st Place", "RM 550"], ["2nd Place", "RM 300"], ["3rd Place", "RM 150"] ],
+                schedule: [
+                    "Registration closes — 26 August 2026, 11:59 PM",
+                    "Check-in opens — 28 August 2026, 7:30 PM",
+                    "Knockout Rounds — 28 August 2026, 8:00 PM",
+                    "Grand Final — 28 August 2026, 11:00 PM"
+                ],
+                registered: 58, capacity: 64, status: "open",
+                contactEmail: "esports.mlbb@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+            "idv-abyss": {
+                game: "Identity V", gameLabel: "Identity V",
+                title: "Identity V's Call of the Abyss V",
+                prize: "RM 1,000 Prize Pool",
+                date: "28 December 2026", time: "2:00 PM +08",
+                format: "5 vs 5", formatSub: "Team registration only",
+                map: "Tournament Map Pool", mapSub: "Custom Match Rules",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "National (Japan)",
+                banner: "images/idv-1.webp",
+                description: "Join the official Identity V's Call of the Abyss V tournament hosted by UTAR E-Sports Club! Assemble your squad of 5 (1 Hunter & 4 Survivors) to compete for a total prize pool of RM 1,000. Test your strategies, outsmart your opponents, and rise to the top in this thrilling knockout tournament.",
+                rules: [
+                    "Each team fields 5 starters (1 Hunter + 4 Survivors) with 1 optional substitute.",
+                    "Single elimination one loss and you're out.",
+                    "Draft pick mode, character bans, and custom match rules apply.",
+                    "Players must join the official Discord voice channel during their match.",
+                    "No-shows after a 10-minute grace period forfeit the match."
+                ],
+                prizes: [ ["1st Place", "RM 550"], ["2nd Place", "RM 300"], ["3rd Place", "RM 150"] ],
+                schedule: [
+                    "Registration closes — 28 December 2026, 02:00 PM",
+                    "Check-in opens — 28 December 2026, 02:00 PM",
+                    "Knockout Rounds — 28 December 2026, 06:00 PM",
+                    "Grand Final — 28 December 2026, 10:00 PM"
+                ],
+                registered: 58, capacity: 64, status: "open",
+                contactEmail: "esports.idv@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            },
+
+            "hok-invi": {
+                game: "Honor of Kings", gameLabel: "Honor of Kings",
+                title: "Honor of Kings Invitational S1",
+                prize: "RM 10,000 Prize Pool",
+                date: "20 August 2026", time: "8:00 PM +08",
+                format: "5 vs 5", formatSub: "Team registration only",
+                map: "Land of Dawn", mapSub: "Ranked Rules",
+                host: "UTAR E-Sports Club", hostFollowers: "341 Followers",
+                hostLogo: "images/esportlogo.jpg",
+                region: "National (Singapore)",
+                banner: "images/hok-1.jpg",
+                description: "A single-night knockout clash for Honor of Kings squads, run in partnership with Moonton's student community program. Fast-paced, single-elimination format designed to crown a champion in one evening.",
+                rules: [
+                    "Each team fields 5 starters with 1 optional substitute.",
+                    "Single elimination — one loss and you're out.",
+                    "Draft pick mode, mirror match rule applies.",
+                    "Players must join the official Discord voice channel during their match.",
+                    "No-shows after a 10-minute grace period forfeit the match."
+                ],
+                prizes: [ ["1st Place", "RM 5500"], ["2nd Place", "RM 3000"], ["3rd Place", "RM 1500"] ],
+                schedule: [
+                    "Registration closes — 19 August 2026, 11:59 PM",
+                    "Check-in opens — 20 August 2026, 7:30 PM",
+                    "Knockout Rounds — 20 August 2026, 8:00 PM",
+                    "Grand Final — 20 August 2026, 11:00 PM"
+                ],
+                registered: 38, capacity: 64, status: "open",
+                contactEmail: "esports.hok@utar.edu.my", contactDiscord: "discord.gg/utar-esports"
+            }
+
+
+        };
+
+        function getParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        // ==========================================
+        // Registration records: Store "which account joined which tournament" in the browser's localStorage.
+        //  { "username": ["tournament_id1", "tournament_id2", ...], ... }
+        // (e.g., creating an association table using user_id + tournament_id).
+        // ==========================================
+        const JOINED_STORAGE_KEY = 'utarEsportsJoinedTournaments';
+
+        function getCurrentUsername() {
+            if (!document.cookie.includes('gamerName=')) return null;
+            return decodeURIComponent(document.cookie.split('gamerName=')[1].split(';')[0]);
+        }
+
+        function getJoinedMap() {
+            try {
+                return JSON.parse(localStorage.getItem(JOINED_STORAGE_KEY)) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function hasJoinedTournament(username, tournamentId) {
+            const map = getJoinedMap();
+            return !!(map[username] && map[username].includes(tournamentId));
+        }
+
+        function recordJoinedTournament(username, tournamentId) {
+            const map = getJoinedMap();
+            if (!map[username]) map[username] = [];
+            if (!map[username].includes(tournamentId)) {
+                map[username].push(tournamentId);
+                localStorage.setItem(JOINED_STORAGE_KEY, JSON.stringify(map));
+            }
+        }
+
+        // Cancel registration: Remove this tournament's ID from the user's registration records
+        function removeJoinedTournament(username, tournamentId) {
+            const map = getJoinedMap();
+            if (map[username]) {
+                map[username] = map[username].filter(function(tid) { return tid !== tournamentId; });
+                localStorage.setItem(JOINED_STORAGE_KEY, JSON.stringify(map));
+            }
+        }
+
+        function renderTournament(t, id) {
+            document.getElementById('pageTitle').textContent = t.title + ' | UTAR E-Sports Club';
+            document.getElementById('detailGameLabel').textContent = t.gameLabel;
+            document.getElementById('detailTitle').textContent = t.title;
+            document.getElementById('detailPrize').textContent = t.prize;
+
+            document.getElementById('infoGame').textContent = t.game;
+            document.getElementById('infoDate').textContent = t.date;
+            document.getElementById('infoTime').textContent = t.time;
+            document.getElementById('infoFormat').textContent = t.format;
+            document.getElementById('infoFormatSub').textContent = t.formatSub;
+            document.getElementById('infoMap').textContent = t.map;
+            document.getElementById('infoMapSub').textContent = t.mapSub;
+            document.getElementById('infoRegion').textContent = t.region;
+
+            document.getElementById('hostLogo').src = t.hostLogo;
+            document.getElementById('hostName').textContent = t.host;
+            document.getElementById('hostFollowers').textContent = t.hostFollowers;
+
+            document.getElementById('bannerImg').src = t.banner;
+            document.getElementById('detailDescription').textContent = t.description;
+
+            const rulesList = document.getElementById('rulesList');
+            rulesList.innerHTML = '';
+            t.rules.forEach(r => {
+                const li = document.createElement('li');
+                li.innerHTML = '<i class="fa-solid fa-check" style="color:var(--neon-cyan,#00f0ff); margin-right:10px;"></i>' + r;
+                rulesList.appendChild(li);
+            });
+
+            const prizesList = document.getElementById('prizesList');
+            prizesList.innerHTML = '';
+            t.prizes.forEach(p => {
+                const row = document.createElement('div');
+                row.className = 'prize-row';
+                row.innerHTML = '<span class="prize-rank">' + p[0] + '</span><span class="prize-amount">' + p[1] + '</span>';
+                prizesList.appendChild(row);
+            });
+
+            const scheduleList = document.getElementById('scheduleList');
+            scheduleList.innerHTML = '';
+            t.schedule.forEach(s => {
+                const li = document.createElement('li');
+                li.innerHTML = '<i class="fa-regular fa-clock" style="color:#8b92a5; margin-right:10px;"></i>' + s;
+                scheduleList.appendChild(li);
+            });
+
+            document.getElementById('contactHost').textContent = t.host;
+            document.getElementById('contactEmail').textContent = t.contactEmail;
+            document.getElementById('contactDiscord').textContent = t.contactDiscord;
+
+            const statusBadge = document.getElementById('statusBadge');
+            if (t.status === 'open') {
+                statusBadge.textContent = 'REGISTRATION OPEN';
+                statusBadge.className = 'status-badge status-open';
+            } else {
+                statusBadge.textContent = 'REGISTRATION CLOSED';
+                statusBadge.className = 'status-badge status-closed';
+            }
+            document.getElementById('playersBadge').textContent = t.registered + ' / ' + t.capacity + ' PLAYERS REGISTERED';
+
+            const joinBtn = document.getElementById('joinBtn');
+            const currentUsername = getCurrentUsername();
+            let joined = !!(currentUsername && hasJoinedTournament(currentUsername, id));
+
+            // This function handles the Join button's UI state.
+            // It evaluates three things: if the user already joined, if the tournament is full, and if registration is open or closed.
+            function updateJoinButtonUI() {
+                if (joined) {
+                    // Joined: Keep the button clickable so the user can "Cancel Registration".
+                    // Change style to outline to indicate it can be interacted with again.
+                    joinBtn.disabled = false;
+                    joinBtn.textContent = 'Joined ✓';
+                    joinBtn.classList.add('btn-neon-joined');
+                } else if (t.status !== 'open' || t.registered >= t.capacity) {
+                    joinBtn.disabled = true;
+                    joinBtn.textContent = t.registered >= t.capacity ? 'Registration Full' : 'Registration Closed';
+                    joinBtn.classList.remove('btn-neon-joined');
+                } else {
+                    joinBtn.disabled = false;
+                    joinBtn.textContent = 'Join Tournament';
+                    joinBtn.classList.remove('btn-neon-joined');
+                }
+            }
+            updateJoinButtonUI();
+
+            // Show "Click to Cancel" only when hovering over the "Joined" button; revert to "Joined ✓" when the mouse leaves.
+            joinBtn.addEventListener('mouseenter', function() {
+                if (joined) {
+                    joinBtn.textContent = 'Click to Cancel';
+                }
+            });
+            joinBtn.addEventListener('mouseleave', function() {
+                if (joined) {
+                    joinBtn.textContent = 'Joined ✓';
+                }
+            });
+
+            // For logged-in users, the welcome message should update based on the joined status
+            // (If canceled, it changes back to prompt them to join).
+            function updateWelcomeMessage() {
+                const welcomeMsgEl = document.getElementById('welcomeMsg');
+                if (!welcomeMsgEl || !currentUsername) return;
+                welcomeMsgEl.textContent = joined
+                    ? "You're already registered for this tournament. See you there!"
+                    : "You're logged in — join the tournament below.";
+            }
+
+            joinBtn.addEventListener('click', function() {
+                const username = getCurrentUsername();
+                if (!username) {
+                    // Redirect Intent: Remember what the guest was trying to do (the URL of this tournament).
+                    // After a successful login, auth.js will read this value and bring the user back here, instead of redirecting to the homepage.
+                    sessionStorage.setItem('returnAfterLogin', window.location.pathname + window.location.search);
+                    alert('Please login first to join this tournament.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (joined) {
+                    // Clicking the "Joined" button again -> Cancels the registration
+                    const confirmCancel = confirm('Do you want to cancel your registration for "' + t.title + '"?');
+                    if (confirmCancel) {
+                        removeJoinedTournament(username, id);
+                        joined = false;
+                        t.registered = Math.max(t.registered - 1, 0);
+                        document.getElementById('playersBadge').textContent = t.registered + ' / ' + t.capacity + ' PLAYERS REGISTERED';
+                        updateJoinButtonUI();
+                        updateWelcomeMessage();
+                    }
+                    return;
+                }
+
+                const confirmJoin = confirm('Do you want to join "' + t.title + '"?');
+                if (confirmJoin) {
+                    recordJoinedTournament(username, id); // Record: This account has joined this tournament
+                    joined = true;
+                    t.registered = Math.min(t.registered + 1, t.capacity);
+                    document.getElementById('playersBadge').textContent = t.registered + ' / ' + t.capacity + ' PLAYERS REGISTERED';
+                    updateJoinButtonUI();
+                    updateWelcomeMessage();
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+                const id = getParam('id');
+                const t = tournamentsData[id];
+
+                if (!t) {
+                    document.getElementById('detailTitle').textContent = 'Tournament not found';
+                    const descEl = document.getElementById('detailDescription');
+                    if (descEl) descEl.textContent = "We couldn't find the tournament you're looking for...";
+                } else {
+                    renderTournament(t, id);
+                }
+
+                // Show the Create Account/Login panel or the logged-in welcome box based on the user's login status.
+                // (Reuse the same gamerName cookie checking method from auth.js to keep the state consistent)
+                const cookies = document.cookie;
+                const accountPanel = document.getElementById('accountPanel');
+                const welcomeBox = document.getElementById('welcomeBox');
+                if (cookies.includes('gamerName=')) {
+                    const name = decodeURIComponent(cookies.split('gamerName=')[1].split(';')[0]);
+                    document.getElementById('welcomeName').textContent = name;
+                    accountPanel.style.display = 'none';
+                    welcomeBox.style.display = 'block';
+
+                    // Separate the welcome messages based on whether this account has already joined this tournament.
+                    // This avoids confusing the user into thinking they have already registered when they haven't.
+                    const welcomeMsgEl = document.getElementById('welcomeMsg');
+                    if (hasJoinedTournament(name, id)) {
+                        welcomeMsgEl.textContent = "You're already registered for this tournament. See you there!";
+                    } else {
+                        welcomeMsgEl.textContent = "You're logged in — join the tournament below.";
+                    }
+                } else {
+                    accountPanel.style.display = 'block';
+                    welcomeBox.style.display = 'none';
+                }
+
+                // Redirect Intent finalizing: If the user was just brought back to this page after logging in,
+                // briefly highlight the "Join Tournament" button to remind them: "You can now continue what you were trying to do."
+                if (sessionStorage.getItem('justLoggedIn') === '1' && cookies.includes('gamerName=')) {
+                    sessionStorage.removeItem('justLoggedIn');
+                    const joinBtnEl = document.getElementById('joinBtn');
+                    if (joinBtnEl && !joinBtnEl.disabled) {
+                        joinBtnEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        joinBtnEl.classList.add('join-highlight');
+                        setTimeout(() => joinBtnEl.classList.remove('join-highlight'), 2500);
+                    }
+                }
+
+                // Redirect Intent: All entry points on this page that lead to login/signup
+                // (e.g., Navbar Login button, Right-side Create Account/Login panel) must first remember the "current URL".
+                // Otherwise, only the "Join Tournament" button will remember it, and logging in from other entry points would still send the user to the homepage.
+                const returnEntryPoints = ['nav-login-btn', 'accountLoginLink', 'accountSignupLink'];
+                returnEntryPoints.forEach(function (elId) {
+                    const el = document.getElementById(elId);
+                    if (el) {
+                        el.addEventListener('click', function () {
+                            sessionStorage.setItem('returnAfterLogin', window.location.pathname + window.location.search);
+                        });
+                    }
+                });
+
+                // Top tab switching (Overview / Participants / Brackets / Media / Stats / Announcements)
+                const topLabels = {
+                    participants: 'Participants list will open once registration closes.',
+                    brackets: 'The bracket will be generated automatically after check-in.',
+                    media: 'Photos and clips from this tournament will appear here.',
+                    stats: 'Match statistics will be published after the tournament starts.',
+                    announcements: 'Official announcements from the organizer will be posted here.'
+                };
+                document.querySelectorAll('.top-tab').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        document.querySelectorAll('.top-tab').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        const key = this.dataset.topTab;
+                        const overviewPanel = document.getElementById('topPanel-overview');
+                        const placeholderPanel = document.getElementById('topPanel-placeholder');
+                        if (key === 'overview') {
+                            overviewPanel.style.display = '';
+                            placeholderPanel.style.display = 'none';
+                        } else {
+                            overviewPanel.style.display = 'none';
+                            placeholderPanel.style.display = '';
+                            document.getElementById('placeholderTitle').textContent = this.textContent + ' — Coming Soon';
+                        }
+                    });
+                });
+
+                // Pill tab switching for Details / Rules / Prizes / Schedule / Contact
+                document.querySelectorAll('.pill-tab').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+                        document.getElementById('subPanel-' + this.dataset.pillTab).classList.add('active');
+                    });
+                });
+            });
+    </script>
+
+    <!--cool line backgound-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 0.5,
+            color: 0x004d44,
+            backgroundColor: 0x0b0c10,
+            spacing: 25.00,
+            points: 8.00
+        });
+    </script>
+
+</body>
+</html>

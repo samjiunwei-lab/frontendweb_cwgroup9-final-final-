@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | UTAR E-Sports Club</title>
+    <!-- 1. Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 2. Global Esports Theme External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome Icon Font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Carousel Base Height and Overlay Structure */
+    .carousel-item {
+        height: 65vh;
+        min-height: 450px;
+        background: no-repeat center center cubic-bezier(0.1, 0, 0.1, 1);
+        background-size: cover;
+    }
+
+    .carousel-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%);
+    }
+
+    .carousel-caption {
+        bottom: 15%;
+        z-index: 2;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        z-index: 10 !important; /* move the arrow button to front */
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--neon-cyan);
+        text-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
+    }
+
+    /* Statistics Banner */
+    .stats-banner {
+        background: linear-gradient(90deg, rgba(0, 245, 212, 0.08) 0%, rgba(0, 180, 216, 0.15) 100%);
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        backdrop-filter: blur(5px);
+    }
+
+    .stat-number {
+        font-size: clamp(1.2rem, 6vw, 2.2rem); 
+        font-weight: 800;
+        font-family: 'Orbitron', sans-serif;
+        color: var(--neon-cyan);
+        text-shadow: 0 0 12px rgba(0, 245, 212, 0.6);
+        display: block;
+        width: 100%;
+        font-variant-numeric: tabular-nums;
+        contain: layout;
+        white-space: nowrap; 
+    }
+
+    .stats-banner .small {
+        font-size: clamp(0.6rem, 2.5vw, 0.75rem); 
+        white-space: nowrap; 
+        letter-spacing: 0.5px; 
+    }
+
+    /* Game Card Showcase */
+    .game-card {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: var(--bg-card);
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+        border-color: var(--neon-cyan);
+    }
+
+    .game-card img {
+        height: 220px;
+        object-fit: cover;
+        width: 100%;
+        filter: brightness(0.85);
+        transition: filter 0.3s ease;
+    }
+
+    .game-card:hover img {
+        filter: brightness(1.05);
+    }
+
+    .game-card-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.85);
+        border: 1px solid var(--neon-cyan);
+        color: var(--neon-cyan);
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 4px 10px;
+    }
+
+    /* Video Player Styles */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 4px;
+        border: 2px solid var(--neon-cyan);
+        box-shadow: 0 0 25px rgba(0, 245, 212, 0.25);
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .playlist-group .list-group-item {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .playlist-group .list-group-item:hover,
+    .playlist-group .list-group-item.active {
+        background: rgba(0, 245, 212, 0.15);
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
+</style>
+</head>
+
+<body class="bg-dark text-light">
+
+    <!--cool line background-->
+    <div id="vanta-bg"></div>
+
+    <!-- ==========================================
+          [Shared Navbar]
+          ========================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">UTAR <span>E-SPORTS</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="teams.html">Our Teams</a></li>
+                    <li class="nav-item"><a class="nav-link" href="schedule.html">Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link" href="news.html">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tournaments.html">Tournaments</a></li>
+                </ul>
+                <div class="d-flex gap-2 ms-auto mt-2 mt-lg-0">
+                    <a class="btn btn-cyber btn-sm active" href="login.html" id="nav-login-btn">
+                        <i class="fa-solid fa-user me-1"></i> Login
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="#" id="nav-logout-btn" style="display:none;">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+   <!-- ==========================================
+        【Core Component: Hero Carousel】
+        ========================================== -->
+    <div id="heroCarousel" class="carousel slide carousel-fade mt-5 pt-3" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
+                aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active"
+                style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1920&q=80');">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption text-center" style="top: 50%; bottom: auto; transform: translateY(-50%); width: 100%; left: 0; padding: 0 15px;">
+                    <h1 class="cyber-title fw-bold text-uppercase" style="line-height: 1.4; font-size: clamp(2rem, 5vw, 3.5rem);">Unleash Your <span
+                            style="color: var(--neon-cyan);">Gaming Potential</span></h1>
+                    <p class="lead mt-3 mx-auto text-light" style="max-width: 650px; font-size: clamp(0.9rem, 3vw, 1.25rem);">Welcome to UTAR E-Sports Club.
+                        Join the ultimate hub for competitive gamers, connect with pro players, and dominate the campus
+                        leagues.</p>
+                    <a href="tournaments.html" class="btn btn-info btn-lg mt-3 fw-bold">Join a League</a>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item"
+                style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1920&q=80');">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption text-center" style="top: 50%; bottom: auto; transform: translateY(-50%); width: 100%; left: 0; padding: 0 15px;">
+                    <h2 class="cyber-title fw-bold text-uppercase" style="line-height: 1.4; font-size: clamp(2rem, 5vw, 3.5rem);">UTAR <span
+                            style="color: var(--neon-cyan);">Championship 2026</span></h2>
+                    <p class="lead mt-3 mx-auto text-light" style="max-width: 650px; font-size: clamp(0.9rem, 3vw, 1.25rem);">The biggest campus esports
+                        tournament is back! Registration is now available for Valorant, FC26, and Mobile Legends. Prize
+                        pool over RM 10,000.</p>
+                    <a href="schedule.html" class="btn btn-outline-info btn-lg mt-3 fw-bold">View Schedule</a>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item"
+                style="background-image: url('https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=1920&q=80');">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption text-center" style="top: 50%; bottom: auto; transform: translateY(-50%); width: 100%; left: 0; padding: 0 15px;">
+                    <h2 class="cyber-title fw-bold text-uppercase" style="line-height: 1.4; font-size: clamp(2rem, 5vw, 3.5rem);">Meet Our <span
+                            style="color: var(--neon-cyan);">Elite Teams</span></h2>
+                    <p class="lead mt-3 mx-auto text-light" style="max-width: 650px; font-size: clamp(0.9rem, 3vw, 1.25rem);">Backed by professional coaching
+                        and state-of-the-art training facilities. Meet the legends representing UTAR in national
+                        inter-varsity tournaments.</p>
+                    <a href="teams.html" class="btn btn-info btn-lg mt-3 fw-bold">Explore Teams</a>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- ==========================================
+         【Feature Highlight: Statistics Banner (EWC Style)】
+         ========================================== -->
+    <section class="stats-banner py-4 my-2">
+        <div class="container">
+            <div class="row text-center gy-3">
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">RM 15,000+</div>
+                    <div class="small text-uppercase fw-bold">Annual Prize Pool</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">6+</div>
+                    <div class="small text-uppercase fw-bold">Official Titles</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">1,200+</div>
+                    <div class="small text-uppercase fw-bold">Active Members</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-number">15</div>
+                    <div class="small text-uppercase fw-bold">National Trophies</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <main class="container my-5 py-2">
+
+    <!-- Section 1: Club Introduction -->
+    <section class="row align-items-center mb-5 gy-4">
+        <div class="col-lg-6">
+            <h2 class="cyber-title mb-4 fw-bold">Who We <span>Are</span></h2>
+            <p class="fs-5">UTAR E-Sports Club is dedicated to fostering a supportive community for both casual and competitive gamers. Founded with the mission to promote esports as a recognized collegiate sport, we bridge the gap between passion and professionalism.</p>
+            <p class="mb-4">Whether you are looking to climb the ranks in regional tournaments or simply find a squad to play with after classes, we offer the platform, coaching, and equipment to scale your talent.</p>
+            <a href="about.html" class="btn btn-cyber">Learn More About Us</a>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-1" style="border: 2px solid var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80" alt="Esports Arena" class="img-fluid rounded-0">
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Pro Player Highlights Video -->
+    <section class="my-5 py-4">
+        <div class="text-center mb-4">
+            <h2 class="cyber-title">Pro Player <span>Highlights</span></h2>
+            <p class="">Relive the clutch plays, unreal aces, and championship-winning moments from our UTAR athletes.</p>
+        </div>
+
+        <div class="row gy-4 align-items-center">
+            <div class="col-lg-8">
+                <div class="video-container">
+                    <iframe id="highlightVideo" src="https://www.youtube.com/embed/ROqtK5R2it0" title="UTAR Esports Highlights" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <h5 class="mb-3 text-uppercase fw-bold" style="color: var(--neon-cyan);"><i class="fa-solid fa-fire me-2"></i>Featured Reels</h5>
+                <div class="list-group playlist-group">
+                    <a class="list-group-item list-group-item-action active p-3" onclick="changeVideo('https://www.youtube.com/embed/ROqtK5R2it0')">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 fw-bold">UTAR Grand Finals Top 10 Clutch Plays</h6>
+                            <small style="color: var(--neon-cyan);">Valorant</small>
+                        </div>
+                        <small class="">Valorant & MLBB Inter-Varsity Finals</small>
+                    </a>
+                    <a class="list-group-item list-group-item-action p-3" onclick="changeVideo('https://www.youtube.com/embed/jgDTnutOf64')">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 fw-bold">FC26 Campus Cup Best Goals Compilation</h6>
+                            <small class="">FC26</small>
+                        </div>
+                        <small class="">Solo division insane skill moves and shots</small>
+                    </a>
+                    <a class="list-group-item list-group-item-action p-3" onclick="changeVideo('https://www.youtube.com/embed/8p2Lbx0WgJ0')">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 fw-bold">PUBG Mobile Squad Wipe Moments</h6>
+                            <small class="">PUBG</small>
+                        </div>
+                        <small class="">UTAR Team Cyber-Knights Clutching Dinner</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Call to Action (CTA) -->
+    <section class="row my-5">
+        <div class="col-12">
+            <div class="cyber-card p-5 text-center position-relative overflow-hidden" style="border-left: 5px solid var(--neon-cyan);">
+                <h3 class="cyber-title mb-3 fs-2">READY TO TAKE THE <span>STAGE?</span></h3>
+                <p class="mx-auto mb-4" style="max-width: 600px;">Registration for the upcoming UTAR Rookie Cup is closing soon. Don't miss your chance to be scouted by our official university teams.</p>
+                <a href="tournaments.html" class="btn btn-cyber-cyan btn-lg">Register Now</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+   <!-- [Shared Footer] -->
+    <footer class="cyber-footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3" style="letter-spacing: 1px;">UTAR E-SPORTS CLUB</h5>
+                    <p class="small">The ultimate hub for competitive gamers at Universiti Tunku Abdul Rahman. Join us
+                        to unleash your potential, compete in tournaments, and connect with fellow gamers.</p>
+                </div>
+    
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="index.html"><i class="fa-solid fa-angle-right me-1"></i> Home</a></li>
+                                <li><a href="about.html"><i class="fa-solid fa-angle-right me-1"></i> About</a></li>
+                                <li><a href="teams.html"><i class="fa-solid fa-angle-right me-1"></i> Teams</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="schedule.html"><i class="fa-solid fa-angle-right me-1"></i> Schedule</a></li>
+                                <li><a href="news.html"><i class="fa-solid fa-angle-right me-1"></i> News</a></li>
+                                <li><a href="tournaments.html"><i class="fa-solid fa-angle-right me-1"></i> Join Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Follow Our Socials</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="https://www.facebook.com/UTARnet" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/utarnet1/" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://discord.com/invite/vMrrDVP" target="_blank" rel="noopener noreferrer" class="fs-4"><i 
+                                class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.youtube.com/@UtarEduMy" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                <p class="small mb-0">
+                    <i class="fa-solid fa-envelope me-2"></i>
+                    <span class="text-muted">esportclub.utar@gmail.com</span>
+                </p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 UTAR E-Sports Club. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small text-muted">UCCD2323 Front-End Web Development Assignment</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         【JS Scripts Import】
+         ========================================== -->
+
+    <!-- 1. Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 2. jQuery CDN (fixed domain typo: changed from code.google.com to code.jquery.com) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- 3. Authentication logic (must be placed after jQuery) -->
+    <script src="js/auth.js"></script>
+
+    <!-- 4. Home page specific logic -->
+    <script src="js/index.js"></script>
+
+    <!-- 5. Carousel arrow-button fix
+         Some other script on this page (most likely js/auth.js, which
+         listens for clicks on <a>/<button> elements to check login
+         state) is intercepting clicks before Bootstrap's own carousel
+         handler runs, which stops the prev/next arrows from working.
+         This script grabs the carousel instance directly and binds
+         its own click listeners in the CAPTURE phase with
+         stopImmediatePropagation(), so the arrows always work no
+         matter what any other script does. -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var carouselEl = document.getElementById('heroCarousel');
+            if (!carouselEl || typeof bootstrap === 'undefined') return;
+
+            var heroCarousel = bootstrap.Carousel.getOrCreateInstance(carouselEl, {
+                interval: 5000,
+                ride: 'carousel',
+                wrap: true
+            });
+
+            var prevBtn = carouselEl.querySelector('.carousel-control-prev');
+            var nextBtn = carouselEl.querySelector('.carousel-control-next');
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    heroCarousel.prev();
+                }, true); // capture phase: runs before other click handlers
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    heroCarousel.next();
+                }, true);
+            }
+        });
+    </script>
+
+
+    <!-- Switch video source JavaScript -->
+    <script>
+        function changeVideo(videoUrl) {
+            document.getElementById('highlightVideo').src = videoUrl;
+
+            // Toggle active style in the list
+            const items = document.querySelectorAll('.playlist-group .list-group-item');
+            items.forEach(item => item.classList.remove('active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+        }
+    </script>
+
+   <!--cool line backgound-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 0.5,
+            color: 0x004d44,
+            backgroundColor: 0x0b0c10,
+            spacing: 25.00,
+            points: 8.00
+        });
+
+    </script>
+
+</body>
+
+</html>

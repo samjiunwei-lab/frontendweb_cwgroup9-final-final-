@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTAR E-Sports Club</title>
+    <!-- 1. Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 2. Shared External Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome Icon Font (Used for footer social media icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Animated background network -->
+    <div id="vanta-bg"></div>
+
+   <!-- ==========================================
+          [Shared Navbar]
+          ========================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">UTAR <span>E-SPORTS</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="teams.html">Our Teams</a></li>
+                    <li class="nav-item"><a class="nav-link" href="schedule.html">Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link" href="news.html">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tournaments.html">Tournaments</a></li>
+                </ul>
+                <div class="d-flex gap-2 ms-auto mt-2 mt-lg-0">
+                    <a class="btn btn-cyber btn-sm active" href="login.html" id="nav-login-btn">
+                        <i class="fa-solid fa-user me-1"></i> Login
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="#" id="nav-logout-btn" style="display:none;">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================
+         [Core Content Area]
+         Modify code only within this section for individual pages
+         ========================================== -->
+    <!-- ==========================================
+         [Core Content Area - Schedule]
+         ========================================== -->
+    <main class="container my-5">
+        <!-- Hero Page Title -->
+        <div class="row mb-5">
+            <div class="col-12 text-center py-4">
+                <h1 class="cyber-title">Tournament <span>Schedule</span></h1>
+                <p class="lead mt-2 text-muted">Keep track of our upcoming clashes and historical victories.</p>
+            </div>
+        </div>
+
+        <!-- Filter Buttons Area (Enhance UI/UX experience) -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <button class="btn btn-cyber-cyan btn-sm active me-2">All Games</button>
+                <button class="btn btn-cyber btn-sm me-2">Identity V</button>
+                <button class="btn btn-cyber btn-sm me-2">Valorant</button>
+                <button class="btn btn-cyber btn-sm">League of Legends</button>
+                <button class="btn btn-cyber btn-sm">PUBG Mobile</button>
+            </div>
+        </div>
+
+        <!-- Tournament Schedule Table Card -->
+        <div class="row">
+            <div class="col-12">
+                <div class="cyber-card">
+                    <h3 class="cyber-card-title"><i class="fa-solid fa-calendar-days me-2"></i>Upcoming & Recent Matches
+                    </h3>
+                    <div class="table-responsive mt-4">
+                        <table class="table table-dark table-hover align-middle mb-0"
+                            style="--bs-table-bg: transparent; border-color: var(--border-color);">
+                            <thead>
+                                <tr style="color: var(--neon-cyan); border-bottom: 2px solid var(--neon-purple);">
+                                    <th scope="col">Date & Time</th>
+                                    <th scope="col">Game</th>
+                                    <th scope="col" class="text-end">Team 1</th>
+                                    <th scope="col" class="text-center">VS / Score</th>
+                                    <th scope="col">Team 2</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Match 1: Upcoming -->
+                                <tr>
+                                    <td>2026-07-25 14:00</td>
+                                    <td><span class="badge bg-secondary">Valorant</span></td>
+                                    <td class="text-end fw-bold">UTAR Vanguard</td>
+                                    <td class="text-center text-warning fw-bold">VS</td>
+                                    <td class="fw-bold">UM Titans</td>
+                                    <td><span class="badge"
+                                            style="background-color: var(--neon-purple); box-shadow: 0 0 5px var(--neon-purple);">UPCOMING</span>
+                                    </td>
+                                </tr>
+                                <!-- Match 2: Live / In Progress -->
+                                <tr>
+                                    <td>2026-07-19 15:30</td>
+                                    <td><span class="badge bg-info text-dark">Identity V</span></td>
+                                    <td class="text-end fw-bold text-info">UTAR Astral</td>
+                                    <td class="text-center text-info fw-bold">1 - 0</td>
+                                    <td class="fw-bold">NUS Pioneers</td>
+                                    <td><span class="badge bg-danger animate-pulse"
+                                            style="box-shadow: 0 0 8px #dc3545;">LIVE</span></td>
+                                </tr>
+                                <!-- Match 3: Finished -->
+                                <tr>
+                                    <td>2026-07-12 20:00</td>
+                                    <td><span class="badge bg-dark" style="border: 1px solid var(--neon-cyan);">League
+                                            of Legends</span></td>
+                                    <td class="text-end fw-bold text-success">UTAR Esports <i
+                                            class="fa-solid fa-trophy text-warning ms-1"></i></td>
+                                    <td class="text-center fw-bold text-muted">3 - 1</td>
+                                    <td class="fw-bold text-danger">TARC Gaming</td>
+                                    <td><span class="badge bg-success">FINISHED</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- [Shared Footer] -->
+    <footer class="cyber-footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3" style="letter-spacing: 1px;">UTAR E-SPORTS CLUB</h5>
+                    <p class="small">The ultimate hub for competitive gamers at Universiti Tunku Abdul Rahman. Join us
+                        to unleash your potential, compete in tournaments, and connect with fellow gamers.</p>
+                </div>
+    
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="index.html"><i class="fa-solid fa-angle-right me-1"></i> Home</a></li>
+                                <li><a href="about.html"><i class="fa-solid fa-angle-right me-1"></i> About</a></li>
+                                <li><a href="teams.html"><i class="fa-solid fa-angle-right me-1"></i> Teams</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="schedule.html"><i class="fa-solid fa-angle-right me-1"></i> Schedule</a></li>
+                                <li><a href="news.html"><i class="fa-solid fa-angle-right me-1"></i> News</a></li>
+                                <li><a href="tournaments.html"><i class="fa-solid fa-angle-right me-1"></i> Join Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Follow Our Socials</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="https://www.facebook.com/UTARnet" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/utarnet1/" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://discord.com/invite/vMrrDVP" target="_blank" rel="noopener noreferrer" class="fs-4"><i 
+                                class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.youtube.com/@UtarEduMy" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                <p class="small mb-0">
+                    <i class="fa-solid fa-envelope me-2"></i>
+                    <span class="text-muted">esportclub.utar@gmail.com</span>
+                </p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 UTAR E-Sports Club. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small text-muted">UCCD2323 Front-End Web Development Assignment</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         [JS Script Imports]
+         ========================================== -->
+    <!-- 1. Bootstrap 5 Bundle JS (Includes Popper for handling navbar collapses and dropdowns) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- 2. Custom Page Script / Core Logic Files -->
+    <script src="js/schedule.js"></script>
+    <script src="js/auth.js"></script>
+
+    <!-- Animated background network script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 0.5,
+            color: 0x004d44,
+            backgroundColor: 0x0b0c10,
+            spacing: 25.00,
+            points: 8.00
+        });
+    </script>
+
+</body>
+
+</html>

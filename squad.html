@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squads | UTAR E-Sports Club</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #0b0c10;
+            background-image: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(201, 138, 68, 0.05), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .squad-card {
+            background: rgba(20, 23, 34, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 22px;
+            height: 100%;
+            transition: all 0.25s ease;
+        }
+        .squad-card:hover {
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+
+        .btn-outline-neon {
+            background: transparent;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            color: var(--neon-cyan, #00f0ff);
+            transition: all 0.25s ease;
+        }
+        .btn-outline-neon:hover {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--neon-cyan, #00f0ff);
+            color: #fff;
+        }
+
+        .squad-card .squad-name {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+        }
+        .squad-card .squad-owner {
+            color: #8b92a5;
+            font-size: 0.78rem;
+        }
+        .squad-card .squad-game-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 50rem;
+            background: rgba(0, 240, 255, 0.12);
+            color: var(--neon-cyan, #00f0ff);
+            margin: 12px 0 8px 0;
+            align-self: flex-start;
+        }
+        .squad-card .squad-desc {
+            color: #a0a5b5;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+        .squad-card .squad-roster-label {
+            color: #a0a5b5;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .squad-card .squad-roster-label .roster-count {
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .btn-join {
+            background: linear-gradient(90deg, #00c2d1, #00f0ff);
+            border: none;
+            color: #06141a;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border-radius: 50rem;
+            padding: 10px 0;
+            width: 100%;
+            transition: filter 0.2s ease;
+        }
+        .btn-join:hover { filter: brightness(1.1); color: #06141a; }
+
+        .btn-join-full {
+            background: #1a1d24;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #565c6b;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border-radius: 50rem;
+            padding: 10px 0;
+            width: 100%;
+            cursor: not-allowed;
+        }
+
+        .btn-join-owner {
+            background: transparent;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--neon-cyan, #00f0ff);
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border-radius: 50rem;
+            padding: 10px 0;
+            width: 100%;
+            cursor: default;
+        }
+
+        .btn-join-joined {
+            background: rgba(25, 135, 84, 0.15);
+            border: 1px solid rgba(25, 135, 84, 0.5);
+            color: #4ade80;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border-radius: 50rem;
+            padding: 10px 0;
+            width: 100%;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        /* ==========================================
+           【Game Selector Track (From Team Details)】
+           ========================================== */
+        .game-picker-wrap { 
+            margin-top: 10px; 
+            margin-bottom: 35px; 
+        }
+
+        .game-picker-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8b92a5;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .game-picker-track {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+        }
+
+        .game-picker-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            width: 95px;
+            background: rgba(30, 36, 52, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-picker-item:hover {
+            border-color: var(--neon-cyan, #00f0ff);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .game-picker-item.active {
+            border-color: var(--neon-cyan, #00f0ff);
+            background: rgba(0, 240, 255, 0.12);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .game-picker-item img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .game-picker-item .picker-all-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--neon-cyan, #00f0ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-cyan, #00f0ff);
+            font-size: 1.2rem;
+        }
+
+        .game-picker-item span {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #a0a5b5;
+            text-align: center;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .game-picker-item.active span { color: #ffffff; }
+
+        /* ==========================================
+           【Game Selector Banner CSS】
+           ========================================== */
+        .cta-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 24px;
+          background: var(--bg-card, rgba(13, 17, 23, 0.85));
+          border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+          border-radius: 4px;
+          padding: 32px;
+          margin: 60px auto 40px;
+          max-width: 1300px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .cta-text {
+          flex: 0 0 50%;
+          max-width: 50%;
+        }
+
+        .cta-text h2 {
+          font-size: 1.5rem;
+        }
+
+        .cta-text p {
+          color: var(--text-muted, #8b92a5);
+          font-size: 0.95rem;
+          margin: 0 0 12px 0;
+        }
+
+        .cta-game-selector {
+          flex: 0 0 50%;
+          max-width: 50%;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+
+        .cta-slider-title {
+          font-size: 1.15rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: var(--neon-cyan, #00f0ff);
+          margin-bottom: 8px;
+          font-weight: 600;
+          text-align: right;
+        }
+
+        .game-slider-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        .game-slider-track {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          scroll-behavior: smooth;
+          padding: 4px;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          max-width: 100%;
+        }
+
+        .game-slider-track::-webkit-scrollbar {
+          display: none;
+        }
+
+        .slider-game-item {
+          flex: 0 0 72px;
+          height: 82px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          padding: 6px 4px;
+          background: var(--bg-main, #0b0c10);
+          border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+        }
+
+        .slider-game-item:hover {
+          background: rgba(0, 245, 212, 0.1);
+          border-color: var(--neon-cyan, #00f0ff);
+        }
+
+        .slider-game-item.active {
+          border-color: var(--neon-cyan, #00f0ff);
+          background: rgba(0, 245, 212, 0.15);
+          box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+        }
+
+        .slider-game-item img {
+          width: 42px;
+          height: 42px;
+          border-radius: 4px;
+          object-fit: cover;
+        }
+
+        .slider-game-item span {
+          font-size: 0.65rem;
+          color: var(--text-primary, #ffffff);
+          text-align: center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .slider-nav-btn {
+          background: var(--bg-card, rgba(13, 17, 23, 0.85));
+          border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+          color: var(--text-primary, #ffffff);
+          border-radius: 50%;
+          width: 26px;
+          height: 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          flex-shrink: 0;
+          transition: all 0.2s;
+          font-size: 0.75rem;
+          user-select: none;
+        }
+
+        .slider-nav-btn:hover {
+          background: var(--neon-cyan, #00f0ff);
+          color: var(--bg-main, #0b0c10);
+        }
+
+        .register-squad-trigger {
+          margin-top: 15px;
+          display: inline-block;
+          padding: 12px 28px;
+          background: var(--neon-cyan, #00f0ff);
+          color: #0b0c10;
+          font-family: 'Orbitron', sans-serif;
+          font-weight: 700;
+          border: none;
+          cursor: pointer;
+          text-transform: uppercase;
+          font-size: 0.9rem;
+          letter-spacing: 0.5px;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
+        }
+
+        .register-squad-trigger:hover {
+          background: transparent;
+          color: var(--neon-cyan, #00f0ff);
+          box-shadow: 0 0 20px var(--neon-cyan, #00f0ff);
+        }
+
+        @media (max-width: 850px) {
+          .cta-banner {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          .cta-text {
+            width: 100%;
+            max-width: 100%;
+          }
+          .cta-game-selector {
+            width: 100%;
+            max-width: 100%;
+            align-items: flex-start;
+          }
+        }
+    </style>
+</head>
+<body>
+    <!-- Line Background -->
+    <div id="vanta-bg"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">UTAR <span>E-SPORTS</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="teams.html">Our Teams</a></li>
+                    <li class="nav-item"><a class="nav-link" href="schedule.html">Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link" href="news.html">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="tournaments.html">Tournaments</a></li>
+                </ul>
+                <div class="d-flex gap-2 ms-auto mt-2 mt-lg-0">
+                    <a class="btn btn-cyber btn-sm active" href="login.html" id="nav-login-btn">
+                        <i class="fa-solid fa-user me-1"></i> Login
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="#" id="nav-logout-btn" style="display:none;">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="cyber-hero text-center pt-5 mt-4">
+        <div class="container">
+            <h1 class="cyber-title">Registered <span>Squads</span></h1>
+            <p class="lead mt-3 text-muted">Browse squads across every game and join one that still has an open slot.</p>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="teams.html" class="btn btn-outline-neon btn-sm mt-3 me-2">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Return to Teams
+                </a>
+                <a href="#squadListContainer" class="btn btn-outline-neon btn-sm mt-3">
+                    <i class="fa-solid fa-arrow-down me-1"></i> Join Squad
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container my-4">
+
+        <!-- Game Selector Section (Team Detail Style) -->
+        <div class="game-picker-wrap">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="game-picker-label mb-0"><i class="fa-solid fa-gamepad me-1" style="color:var(--neon-cyan,#00f0ff);"></i> Filter Squads by Game</span>
+                <span class="badge bg-dark text-info border border-info" id="activeGameBadge">All Games</span>
+            </div>
+            
+            <div class="game-picker-track" id="squadGamePickerTrack">
+                <div class="game-picker-item active" data-game-key="all" data-game-title="All Games">
+                    <div class="picker-all-icon"><i class="fa-solid fa-border-all"></i></div>
+                    <span>All Games</span>
+                </div>
+                <div class="game-picker-item" data-game-key="valorant" data-game-title="VALORANT">
+                    <img src="images/logo-valorant.png" alt="Valorant" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=Valorant'">
+                    <span>Valorant</span>
+                </div>
+                <div class="game-picker-item" data-game-key="lol" data-game-title="League of Legends">
+                    <img src="images/logo-lol.png" alt="LoL" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=LoL'">
+                    <span>LoL</span>
+                </div>
+                <div class="game-picker-item" data-game-key="identity" data-game-title="Identity V">
+                    <img src="images/logo-identity.jpg" alt="Identity V" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=IdentityV'">
+                    <span>Identity V</span>
+                </div>
+                <div class="game-picker-item" data-game-key="csgo" data-game-title="Counter-Strike 2">
+                    <img src="images/logo-counter.png" alt="CS2" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=CS2'">
+                    <span>CS2</span>
+                </div>
+                <div class="game-picker-item" data-game-key="dota2" data-game-title="Dota 2">
+                    <img src="images/logo-dota2.png" alt="Dota 2" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=Dota2'">
+                    <span>Dota 2</span>
+                </div>
+                <div class="game-picker-item" data-game-key="minecraft" data-game-title="Minecraft">
+                    <img src="images/logo-minecraft.png" alt="Minecraft" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=Minecraft'">
+                    <span>Minecraft</span>
+                </div>
+                <div class="game-picker-item" data-game-key="mobile" data-game-title="Mobile Legends: Bang Bang">
+                    <img src="images/logo-mobile.jpg" alt="MLBB" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=MLBB'">
+                    <span>MLBB</span>
+                </div>
+                <div class="game-picker-item" data-game-key="pubg" data-game-title="PUBG Mobile">
+                    <img src="images/logo-pubg.jpg" alt="PUBG" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=PUBG'">
+                    <span>PUBG</span>
+                </div>
+                <div class="game-picker-item" data-game-key="brawl" data-game-title="Brawl Stars">
+                    <img src="images/logo-brawl.png" alt="Brawl Stars" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=BrawlStars'">
+                    <span>Brawl Stars</span>
+                </div>
+                <div class="game-picker-item" data-game-key="hok" data-game-title="Honor of Kings">
+                    <img src="images/logo-hok.jpg" alt="Honor of Kings" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=HonorOfKings'">
+                    <span>Honor of Kings</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="squadListContainer"></div>
+
+        <div class="empty-state" id="squadEmptyState" style="display:none;">
+            <i class="fa-solid fa-shield-halved fs-1 mb-3" style="color:#a0a5b5;"></i>
+            <h5 class="text-white" id="emptyStateTitle">No squads registered yet</h5>
+            <p class="mb-4" id="emptyStateDesc" style="color:#a0a5b5; font-size:0.9rem;">Be the first to register a squad for your game.</p>
+        </div>
+
+        <!-- CTA Game Selector Banner -->
+        <section class="cta-banner" id="ctaBanner">
+          <div class="cta-text">
+            <h2 class="cyber-title mb-2">You Think you're <span>Good?</span></h2>
+            <p>make your own squad then, select game u want and make your own squad to destroy
+              fools that dare to challenge you because they touch more grass. </p>
+            
+            <button type="button" class="register-squad-trigger" id="registerSquadActionBtn">
+               Register Squad for <span id="btnGameName">Valorant</span>
+            </button>
+          </div>
+
+          <div class="cta-game-selector">
+            <div class="cta-slider-title">Selected: <span id="selectedGameLabel" style="color: #fff;">Valorant</span></div>
+            <div class="game-slider-wrapper">
+              <button class="slider-nav-btn" id="slideLeft" type="button">&lt;</button>
+              
+              <div class="game-slider-track" id="gameSliderTrack">
+                <div class="slider-game-item active" data-game-key="valorant" data-game-title="Valorant">
+                  <img src="images/logo-valorant.png" alt="Valorant">
+                  <span>Valorant</span>
+                </div>
+                <div class="slider-game-item" data-game-key="lol" data-game-title="League of Legends">
+                  <img src="images/logo-lol.png" alt="LoL">
+                  <span>LoL</span>
+                </div>
+                <div class="slider-game-item" data-game-key="identity" data-game-title="Identity V">
+                  <img src="images/logo-identity.jpg" alt="Identity V">
+                  <span>Identity V</span>
+                </div>
+                <div class="slider-game-item" data-game-key="csgo" data-game-title="Counter-Strike 2">
+                  <img src="images/logo-counter.png" alt="CS2">
+                  <span>CS2</span>
+                </div>
+                <div class="slider-game-item" data-game-key="dota2" data-game-title="Dota 2">
+                  <img src="images/logo-dota2.png" alt="Dota 2">
+                  <span>Dota 2</span>
+                </div>
+                <div class="slider-game-item" data-game-key="minecraft" data-game-title="Minecraft">
+                  <img src="images/logo-minecraft.png" alt="Minecraft">
+                  <span>Minecraft</span>
+                </div>
+                <div class="slider-game-item" data-game-key="mobile" data-game-title="Mobile Legends">
+                  <img src="images/logo-mobile.jpg" alt="MLBB">
+                  <span>MLBB</span>
+                </div>
+                <div class="slider-game-item" data-game-key="pubg" data-game-title="PUBG Mobile">
+                  <img src="images/logo-pubg.jpg" alt="PUBG">
+                  <span>PUBG</span>
+                </div>
+                <div class="slider-game-item" data-game-key="brawl" data-game-title="Brawl Stars">
+                  <img src="images/logo-brawl.png" alt="Brawl Stars" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=BrawlStars'">
+                  <span>Brawl Stars</span>
+                </div>
+                <div class="slider-game-item" data-game-key="hok" data-game-title="Honor of Kings">
+                  <img src="images/logo-hok.jpg" alt="Honor of Kings" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/shapes/svg?backgroundColor=0d1117&seed=HonorOfKings'">
+                  <span>Honor of Kings</span>
+                </div>
+              </div>
+
+              <button class="slider-nav-btn" id="slideRight" type="button">&gt;</button>
+            </div>
+          </div>
+        </section>
+    </main>
+
+   <!-- [Shared Footer] -->
+    <footer class="cyber-footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3" style="letter-spacing: 1px;">UTAR E-SPORTS CLUB</h5>
+                    <p class="small">The ultimate hub for competitive gamers at Universiti Tunku Abdul Rahman. Join us
+                        to unleash your potential, compete in tournaments, and connect with fellow gamers.</p>
+                </div>
+    
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="index.html"><i class="fa-solid fa-angle-right me-1"></i> Home</a></li>
+                                <li><a href="about.html"><i class="fa-solid fa-angle-right me-1"></i> About</a></li>
+                                <li><a href="teams.html"><i class="fa-solid fa-angle-right me-1"></i> Teams</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="schedule.html"><i class="fa-solid fa-angle-right me-1"></i> Schedule</a></li>
+                                <li><a href="news.html"><i class="fa-solid fa-angle-right me-1"></i> News</a></li>
+                                <li><a href="tournaments.html"><i class="fa-solid fa-angle-right me-1"></i> Join Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Follow Our Socials</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="https://www.facebook.com/UTARnet" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/utarnet1/" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://discord.com/invite/vMrrDVP" target="_blank" rel="noopener noreferrer" class="fs-4"><i 
+                                class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.youtube.com/@UtarEduMy" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                <p class="small mb-0">
+                    <i class="fa-solid fa-envelope me-2"></i>
+                    <span class="text-muted">esportclub.utar@gmail.com</span>
+                </p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 UTAR E-Sports Club. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small text-muted">UCCD2323 Front-End Web Development Assignment</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="js/auth.js"></script>
+
+    <!-- Background Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 0.5,
+            color: 0x004d44,
+            backgroundColor: 0x0b0c10,
+            spacing: 25.00,
+            points: 8.00
+        });
+
+        // ==========================================
+        // Squad Directory & Game Selector Logic
+        // ==========================================
+        const SQUAD_STORAGE_KEY = 'utarEsportsSquads';
+        const SQUAD_REQUESTS_KEY = 'utarEsportsSquadRequests';
+
+        const GAME_ALIAS_MAP = {
+            'valorant': ['VALORANT', 'Valorant'],
+            'lol': ['League of Legends', 'LoL'],
+            'identity': ['Identity V'],
+            'csgo': ['Counter-Strike 2', 'CS2', 'CS:GO'],
+            'dota2': ['Dota 2'],
+            'minecraft': ['Minecraft'],
+            'mobile': ['Mobile Legends: Bang Bang', 'Mobile Legends', 'MLBB'],
+            'pubg': ['PUBG Mobile', 'PUBG'],
+            'brawl': ['Brawl Stars'],
+            'hok': ['Honor of Kings']
+        };
+
+        let currentActiveGameKey = 'all';
+
+        function getCurrentUsername() {
+            if (!document.cookie.includes('gamerName=')) return null;
+            return decodeURIComponent(document.cookie.split('gamerName=')[1].split(';')[0]);
+        }
+
+        function getAllSquads() {
+            try {
+                return JSON.parse(localStorage.getItem(SQUAD_STORAGE_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveAllSquads(squads) {
+            localStorage.setItem(SQUAD_STORAGE_KEY, JSON.stringify(squads));
+        }
+
+        function getAllRequests() {
+            try {
+                return JSON.parse(localStorage.getItem(SQUAD_REQUESTS_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveAllRequests(requests) {
+            localStorage.setItem(SQUAD_REQUESTS_KEY, JSON.stringify(requests));
+        }
+
+        function matchesGameKey(squadGame, targetKey) {
+            if (!targetKey || targetKey === 'all') return true;
+            const aliases = GAME_ALIAS_MAP[targetKey] || [];
+            const sqLower = (squadGame || '').toLowerCase();
+            return aliases.some(alias => sqLower.includes(alias.toLowerCase()) || alias.toLowerCase().includes(sqLower));
+        }
+
+        function renderFilteredSquads(gameKey = 'all') {
+            currentActiveGameKey = gameKey;
+            const username = getCurrentUsername();
+            const allSquads = getAllSquads();
+            const requests = getAllRequests();
+            const listEl = document.getElementById('squadListContainer');
+            const emptyEl = document.getElementById('squadEmptyState');
+            const emptyTitle = document.getElementById('emptyStateTitle');
+            const emptyDesc = document.getElementById('emptyStateDesc');
+
+            listEl.innerHTML = '';
+
+            const filteredSquads = allSquads.filter(squad => matchesGameKey(squad.game, gameKey));
+
+            if (filteredSquads.length === 0) {
+                emptyEl.style.display = 'block';
+                if (gameKey === 'all') {
+                    if (emptyTitle) emptyTitle.textContent = "No squads registered yet";
+                    if (emptyDesc) emptyDesc.textContent = "Be the first to register a squad for your game.";
+                } else {
+                    const activeItem = document.querySelector(`#squadGamePickerTrack .game-picker-item[data-game-key="${gameKey}"]`);
+                    const gameTitle = activeItem ? activeItem.dataset.gameTitle : 'this game';
+                    if (emptyTitle) emptyTitle.textContent = `No squads registered for ${gameTitle}`;
+                    if (emptyDesc) emptyDesc.textContent = `Be the first to register a squad for ${gameTitle}!`;
+                }
+                return;
+            }
+
+            emptyEl.style.display = 'none';
+
+            filteredSquads.forEach(squad => {
+                const isFull = squad.roster >= squad.capacity;
+                const isOwner = username && squad.owner === username;
+                const hasJoined = (!isOwner && username)
+                    ? requests.some(r => r.squadId === squad.id && r.username === username && r.status === 'accepted')
+                    : false;
+
+                let buttonHtml;
+                if (isOwner) {
+                    buttonHtml = 
+                        '<div class="d-flex gap-2">' +
+                            '<button class="btn-join-owner flex-grow-1" disabled><i class="fa-solid fa-crown me-1"></i>YOUR SQUAD</button>' +
+                            '<button class="btn btn-outline-danger delete-btn px-3" data-id="' + squad.id + '" title="Delete Squad" style="border-radius: 50rem;">' +
+                                '<i class="fa-solid fa-trash-can"></i>' +
+                            '</button>' +
+                        '</div>';
+                } else if (hasJoined) {
+                    buttonHtml = '<button class="btn-join-joined" disabled><i class="fa-solid fa-circle-check me-1"></i>JOINED</button>';
+                } else if (isFull) {
+                    buttonHtml = '<button class="btn-join-full" disabled>SQUAD MEMBER IS MAX</button>';
+                } else {
+                    buttonHtml = '<button class="btn-join join-btn" data-id="' + squad.id + '">JOIN SQUAD</button>';
+                }
+
+                const squadDescription = squad.description ? squad.description : 'No description provided.';
+
+                let memberListText = squad.owner + ' (Captain)';
+                if (squad.members && squad.members.length > 0) {
+                    memberListText += ', ' + squad.members.join(', ');
+                }
+
+                const col = document.createElement('div');
+                col.className = 'col-md-6 col-lg-4';
+                col.innerHTML =
+                    '<div class="squad-card d-flex flex-column">' +
+                        '<div class="squad-name">' + squad.name + '</div>' +
+                        '<div class="squad-owner">Captain: ' + squad.owner + '</div>' +
+                        '<div><span class="squad-game-badge">' + squad.game + '</span></div>' +
+                        '<div class="squad-desc">' + squadDescription + '</div>' +
+                        '<div class="small mb-3 text-muted" style="font-size:0.78rem; word-break:break-word;">' +
+                            '<i class="fa-solid fa-users me-1" style="color:var(--neon-cyan, #00f0ff);"></i> ' +
+                            '<strong class="text-white">Members:</strong> ' + memberListText +
+                        '</div>' +
+                        '<div class="squad-roster-label">Roster: <span class="roster-count">' + squad.roster + '/' + squad.capacity + '</span></div>' +
+                        '<div class="mt-auto">' + buttonHtml + '</div>' +
+                    '</div>';
+                listEl.appendChild(col);
+            });
+        }
+
+        function joinSquad(squadId) {
+            const username = getCurrentUsername();
+
+            if (!username) {
+                sessionStorage.setItem('returnAfterLogin', window.location.pathname + window.location.search);
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const squads = getAllSquads();
+            const squad = squads.find(s => s.id === squadId);
+            if (!squad) return;
+
+            if (squad.owner === username) {
+                alert("You are already the captain of this squad.");
+                return;
+            }
+
+            if (squad.roster >= squad.capacity) {
+                alert("Sorry, this squad's roster is already full.");
+                renderFilteredSquads(currentActiveGameKey);
+                return;
+            }
+
+            const requests = getAllRequests();
+            const existing = requests.find(r => r.squadId === squadId && r.username === username);
+
+            if (existing && existing.status === 'accepted') {
+                alert("You have already joined this squad.");
+                return;
+            }
+
+            squad.roster += 1;
+            if (!squad.members) squad.members = [];
+            squad.members.push(username);
+            saveAllSquads(squads);
+
+            if (existing) {
+                existing.status = 'accepted';
+            } else {
+                requests.push({
+                    id: 'req_' + Date.now(),
+                    squadId: squadId,
+                    username: username,
+                    status: 'accepted',
+                    requestedAt: new Date().toISOString()
+                });
+            }
+            saveAllRequests(requests);
+
+            alert("You have successfully joined \"" + squad.name + "\"! (" + squad.roster + "/" + squad.capacity + ")");
+            renderFilteredSquads(currentActiveGameKey);
+        }
+
+        function deleteSquad(squadId) {
+            const username = getCurrentUsername();
+            if (!username) return;
+
+            const squads = getAllSquads();
+            const squad = squads.find(s => s.id === squadId);
+            if (!squad) return;
+
+            if (squad.owner !== username) {
+                alert("Unauthorized: Only the captain can delete this squad.");
+                return;
+            }
+
+            if (!confirm("Are you sure you want to delete squad \"" + squad.name + "\"? This action cannot be undone.")) {
+                return;
+            }
+
+            const updatedSquads = squads.filter(s => s.id !== squadId);
+            saveAllSquads(updatedSquads);
+
+            const requests = getAllRequests();
+            const updatedRequests = requests.filter(r => r.squadId !== squadId);
+            saveAllRequests(updatedRequests);
+
+            alert("Squad \"" + squad.name + "\" has been deleted.");
+            renderFilteredSquads(currentActiveGameKey);
+        }
+
+        $(document).ready(function() {
+            // Check for initial URL query parameter ?game=
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialGameParam = (urlParams.get('game') || 'all').toLowerCase();
+
+            // Set active picker state
+            const targetPickerItem = $(`#squadGamePickerTrack .game-picker-item[data-game-key="${initialGameParam}"]`);
+            if (targetPickerItem.length > 0) {
+                $('#squadGamePickerTrack .game-picker-item').removeClass('active');
+                targetPickerItem.addClass('active');
+                $('#activeGameBadge').text(targetPickerItem.attr('data-game-title'));
+                renderFilteredSquads(initialGameParam);
+            } else {
+                renderFilteredSquads('all');
+            }
+
+            // Click Handler for Game Selector Track
+            $('#squadGamePickerTrack').on('click', '.game-picker-item', function() {
+                $('#squadGamePickerTrack .game-picker-item').removeClass('active');
+                $(this).addClass('active');
+
+                const gameKey = $(this).attr('data-game-key');
+                const gameTitle = $(this).attr('data-game-title');
+                
+                $('#activeGameBadge').text(gameTitle);
+                renderFilteredSquads(gameKey);
+            });
+
+            // Join & Delete Button Click Actions
+            $(document).on('click', '.join-btn', function () {
+                joinSquad($(this).data('id'));
+            });
+
+            $(document).on('click', '.delete-btn', function () {
+                deleteSquad($(this).data('id'));
+            });
+
+            // Bottom CTA Banner Logic
+            let selectedGameKey = 'valorant';
+            let selectedGameTitle = 'Valorant';
+
+            const track = document.getElementById('gameSliderTrack');
+            const slideLeftBtn = document.getElementById('slideLeft');
+            const slideRightBtn = document.getElementById('slideRight');
+            const selectedGameLabel = document.getElementById('selectedGameLabel');
+            const btnGameName = document.getElementById('btnGameName');
+            const registerSquadActionBtn = document.getElementById('registerSquadActionBtn');
+
+            if (slideLeftBtn && track) {
+                slideLeftBtn.addEventListener('click', () => {
+                    track.scrollBy({ left: -288, behavior: 'smooth' });
+                });
+            }
+
+            if (slideRightBtn && track) {
+                slideRightBtn.addEventListener('click', () => {
+                    track.scrollBy({ left: 288, behavior: 'smooth' });
+                });
+            }
+
+            document.querySelectorAll('.slider-game-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.slider-game-item').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+
+                    selectedGameKey = this.dataset.gameKey;
+                    selectedGameTitle = this.dataset.gameTitle;
+
+                    if (selectedGameLabel) selectedGameLabel.textContent = selectedGameTitle;
+                    if (btnGameName) btnGameName.textContent = selectedGameTitle;
+                });
+            });
+
+            function checkCookieAuth() {
+                return document.cookie.includes("gamerName=");
+            }
+
+            if (registerSquadActionBtn) {
+                registerSquadActionBtn.addEventListener('click', function() {
+                    const targetUrl = `register-squad.html?game=${encodeURIComponent(selectedGameKey)}`;
+
+                    if (!checkCookieAuth()) {
+                        sessionStorage.setItem('returnAfterLogin', targetUrl);
+                        alert(`Please log in to register your squad for ${selectedGameTitle}. Redirecting...`);
+                        window.location.href = 'login.html';
+                    } else {
+                        window.location.href = targetUrl;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

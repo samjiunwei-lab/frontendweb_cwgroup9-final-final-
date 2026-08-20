@@ -1,0 +1,236 @@
+/* ==========================================================================
+   UTAR UCCD2323 Front-End Web Development
+   Group Assignment - E-Sports Club Cyber-Cyan Theme Update
+   ========================================================================== */
+
+/* Introducing modern, tech-inspired Google fonts: Orbitron (specifically for titles/logos, similar to the hardcore esports feel in the image) and Rajdhani. */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+
+/* 1. Redefine color variables: Strictly reference the "Geek Cyan" and pure black from the photo (Variables & Reset). */
+:root {
+    --bg-main: #000000;
+    --bg-card: #0d1117;
+    --text-primary: #ffffff;
+    --text-muted: #8b949e;
+    --neon-cyan: #00f5d4;
+    /* Cyber Cyan */
+    --neon-blue: #00b4d8;
+    /* Secondary blue accents */
+    --border-color: #21262d;
+    /* Cyber-grid dark border */
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    /* The global body text utilizes a minimalist, bold, sans-serif typeface with a high-tech aesthetic. */
+    font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+    overflow-x: hidden;
+    padding-top: 76px;
+}
+
+/* 2. Customized navigation bar featuring a solid black background and cyan-green glow, matching the reference photo. (Cyber-Navbar) */
+.navbar-cyber {
+    background-color: var(--bg-main) !important;
+    border-bottom: 2px solid var(--neon-cyan) !important;
+    /* Futuristic matrix-style shimmering projection */
+    box-shadow: 0 4px 20px rgba(0, 245, 212, 0.15);
+    transition: all 0.3s ease;
+}
+
+.navbar-cyber .navbar-brand {
+    /* Uses the Orbitron font to perfectly replicate the hardcore electronic style seen in the top-left corner of the photo. */
+    font-family: 'Orbitron', sans-serif;
+    color: var(--neon-cyan) !important;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 245, 212, 0.6);
+}
+
+.navbar-cyber .navbar-brand span {
+    color: var(--text-primary);
+    text-shadow: none;
+}
+
+.navbar-cyber .nav-link {
+    color: #8b949e !important;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1rem;
+    padding: 10px 15px !important;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+}
+
+/* Changes to the dazzling turquoise-green from the photo on mouse hover. */
+.navbar-cyber .nav-link:hover,
+.navbar-cyber .nav-item.active .nav-link {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* 3. Tech-inspired beam button (Cyber Neon Buttons) */
+.btn-cyber {
+    background: transparent;
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 8px 20px;
+    border-radius: 0px; /* Right-angled edges accentuate a rugged, high-tech aesthetic. */
+    box-shadow: inset 0 0 4px rgba(0, 245, 212, 0.2), 0 0 4px rgba(0, 245, 212, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber:hover,
+.btn-cyber:focus {
+    background-color: var(--neon-cyan);
+    color: var(--bg-main) !important;
+    box-shadow: 0 0 15px var(--neon-cyan);
+    transform: translateY(-1px);
+}
+
+.btn-cyber-cyan {
+    background: var(--neon-cyan);
+    color: var(--bg-main);
+    border: 1px solid var(--neon-cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    border-radius: 0px;
+    box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-cyan:hover {
+    background: transparent;
+    color: var(--neon-cyan);
+    box-shadow: 0 0 20px var(--neon-cyan);
+}
+
+/* 4. Dark-Themed Geek Card Holder (Esport Cards) */
+.cyber-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    transition: all 0.3s ease;
+}
+
+.cyber-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+}
+
+.cyber-card-title {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--text-primary);
+    border-left: 3px solid var(--neon-cyan); /* 左侧加一条科技青装饰线 */
+    padding-left: 10px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* 5. Large-format banners and layout optimization (Hero Banner & Typography) */
+.cyber-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.cyber-title span {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 15px rgba(0, 245, 212, 0.5);
+}
+
+/* 6. Form Styling */
+.cyber-form-control {
+    background-color: #161b22 !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 0px !important;
+    transition: all 0.3s ease !important;
+}
+
+.cyber-form-control:focus {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 8px rgba(0, 245, 212, 0.4) !important;
+}
+
+.cyber-footer {
+    background-color: #000000;
+    border-top: 1px solid var(--border-color);
+    padding: 40px 0 20px 0;
+    color: var(--text-muted);
+}
+
+.cyber-footer a {
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.cyber-footer a:hover {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+/* ==========================================================================
+   8. ⚡ Focused optimization of（Carousel Caption）layout
+   ========================================================================== */
+.carousel-caption p {
+    max-width: 620px !important;    /* Limit the maximum width of the description paragraph to condense the content. */
+    margin-left: auto !important;   
+    margin-right: auto !important;  
+    text-align: center !important;    
+}
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/*Prevent the page from jumping or shifting position unexpectedly*/
+html {
+  overflow-y: scroll;
+}
+
+/*cool line background*/
+#vanta-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;   /* Send it to the very bottom, beneath all other content */
+}
+
+/*Transition animation*/
+body {
+    animation: softFadeIn 0.55s cubic-bezier(0.39, 0.57, 0.56, 1) forwards;
+}
+
+@keyframes softFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cyber-title {
+        font-size: 1.8rem !important; 
+        letter-spacing: 1px !important; /* Tighten the letter spacing slightly to save horizontal space. */
+        width: 100%; 
+        text-align: center; 
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}

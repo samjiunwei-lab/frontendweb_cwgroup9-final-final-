@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTAR E-Sports Club - tournament</title>
+    <!-- Bootstrap 5 CSS for layout and styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #0b0c10;
+            background-image: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(201, 138, 68, 0.05), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Liquid glass effect design */
+        .glass-panel {
+            background: rgba(20, 23, 34, 0.15);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-bar {
+            background-color: rgba(0, 245, 212, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 50rem;
+            color: #fff;
+            backdrop-filter: blur(5px); 
+            -webkit-backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            background-color: rgba(0, 245, 212, 0.08); 
+            border-color: var(--neon-cyan, #00f0ff); 
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); 
+            outline: none; 
+        }
+
+        .search-bar::placeholder {
+            color: #8b949e !important; 
+            opacity: 1 !important;
+        }
+
+        /* Game icon cards (enlarged on hover for a better look) */
+        .game-icon-card {
+            width: 170px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: center;
+        }
+
+        .game-icon-card img {
+            width: 170px;
+            height: 230px;
+            object-fit: cover;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-icon-card:hover img,
+        .game-icon-card.active img {
+            border-color: var(--neon-cyan, #00f0ff);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .game-icon-title {
+            font-size: 1rem;
+            margin-top: 14px;
+            color: #a0a5b5;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.3s ease;
+        }
+
+        .game-icon-card:hover .game-icon-title,
+        .game-icon-card.active .game-icon-title {
+            color: #fff;
+        }
+
+        /* Tournament details cards */
+        .tournament-card {
+            background: rgba(30, 36, 52, 0.92);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .tournament-banner {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+        }
+
+        .tournament-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tournament-link {
+            display: block;
+            height: 100%;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .tournament-link:hover {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .tourney-meta-top {
+            font-size: 0.75rem;
+            color: #8b92a5;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tourney-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .tourney-meta-bottom {
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: #ff3366;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+        }
+
+        .tourney-meta-bottom i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+
+        .tourney-meta-bottom .meta-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .d-none-custom {
+            display: none !important;
+        }
+
+        /* Horizontal scroll container (hides the default browser scrollbar) */
+        .game-scroll-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            gap: 1.5rem;
+            scrollbar-width: none;
+        }
+
+        .game-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* --- Custom thin draggable scrollbar styles --- */
+        .custom-scroll-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 0 0 0;
+        }
+
+        .custom-scroll-track {
+            width: 100%;
+            max-width: 500px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            /* Prevent text selection when interacting with the track to avoid selecting page content */
+            touch-action: none;
+        }
+
+        .custom-scroll-thumb {
+            height: 100%;
+            width: 80px;
+            background: var(--neon-cyan, #00f0ff);
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translateX(0px);
+            will-change: transform;
+            cursor: grab;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 15px rgba(0, 240, 255, 0.4);
+            transition: background-color 0.2s, box-shadow 0.2s;
+            /* Disable default browser touch actions (scrolling/selection) so JavaScript can handle the drag */
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .custom-scroll-thumb:hover, .custom-scroll-thumb:active {
+            background: #33f3ff;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 1), 0 0 20px rgba(0, 240, 255, 0.6);
+        }
+
+        .custom-scroll-thumb:active {
+            cursor: grabbing;
+        }
+
+        /* Prevent the whole page from being accidentally selected while dragging the scrollbar */
+        body.is-dragging-scrollbar {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cool animated line background container -->
+    <div id="vanta-bg"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">UTAR <span>E-SPORTS</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="teams.html">Our Teams</a></li>
+                    <li class="nav-item"><a class="nav-link" href="schedule.html">Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link" href="news.html">News</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="tournaments.html">Tournaments</a></li>
+                </ul>
+                <div class="d-flex gap-2 ms-auto mt-2 mt-lg-0">
+                    <a href="login.html" class="btn btn-cyber btn-sm" id="nav-login-btn">
+                        <i class="fa-solid fa-user me-1"></i> Login
+                    </a>
+                    <a href="#" id="nav-logout-btn" class="btn btn-danger btn-sm" style="display:none;">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+    <!-- Main Header / Hero Section -->
+    <div class="row mb-2">
+        <div class="col-12 text-center py-4">
+            <h1 class="cyber-title">Tour<span>nament</span></h1>
+            <p class="lead mt-2 text-muted">Your gateway to official leagues, major cups, and campus esports.</p>
+        </div>
+    </div>
+
+    <main class="container mt-2 mb-5">
+
+        <!-- Glass effect game selection panel -->
+        <div class="glass-panel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0 fw-bold text-white">Select your game</h3>
+            </div>
+
+            <div class="input-group mb-4 position-relative" style="max-width: 400px;">
+                <span class="position-absolute top-50 translate-middle-y ms-3 border-0 bg-transparent" style="z-index: 10; color: #ffffff;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" class="form-control search-bar ps-5 py-2" id="gameSearch" placeholder="Search for games..."> 
+            </div>
+
+            <!-- Game icons section -->
+            <div class="game-scroll-container" id="gameIconsContainer">
+
+                <div class="game-icon-card" data-game-filter="pubg">
+                    <img src="images/pubg.jpg" alt="PUBG">
+                    <div class="game-icon-title">PUBG Mobile</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="lol">
+                    <img src="images/League_of_Legends.webp" alt="League of Legends">
+                    <div class="game-icon-title">League of Legends</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="valorant">
+                    <img src="images/valorant.jpg" alt="Valorant">
+                    <div class="game-icon-title">VALORANT</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="mlbb">
+                    <img src="images/mlbb.jpg" alt="Mobile Legends">
+                    <div class="game-icon-title">Mobile Legends</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="dota2">
+                    <img src="images/dota2.jpg" alt="Dota 2">
+                    <div class="game-icon-title">Dota 2</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="identityv">
+                    <img src="images/identityv.webp" alt="Identity V">
+                    <div class="game-icon-title">Identity V</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="minecraft">
+                    <img src="images/minecraft.jpg" alt="Minecraft">
+                    <div class="game-icon-title">Minecraft</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="hok">
+                    <img src="images/hok.jpg" alt="Honor of kings">
+                    <div class="game-icon-title">Honor of Kings</div>
+                </div>
+
+                <div class="game-icon-card" data-game-filter="brawlstars">
+                    <img src="images/brawlstars.jpg" alt="Brawl Stars">
+                    <div class="game-icon-title">Brawl Stars</div>
+                </div>
+
+            </div>
+
+            <!-- Custom horizontal draggable scrollbar -->
+            <div class="custom-scroll-wrapper mt-3">
+                <div class="custom-scroll-track" id="customScrollTrack">
+                    <div class="custom-scroll-thumb" id="customScrollThumb"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tournaments list area -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold mb-0" id="feedTitle" style="color: #fff; text-transform: uppercase;">All Tournaments</h3>
+            <button class="btn btn-outline-light btn-sm px-4" id="resetFilters" style="border-radius: 50rem;">View All</button>
+        </div>
+
+        <div class="row g-4" id="tournamentsFeed">
+
+            <!-- PUBG Card 1 -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="pubg">
+                <a href="tournament-details.html?id=pubg-terengganu" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/pubg-1.jpg" alt="PUBG Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">30 August 2026 / 00:00 / PUBG MOBILE</div>
+                            <div class="tourney-title">MEL26 State League - PUBGM Terengganu</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 3000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 4 vs 4</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 0/128</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- PUBG Card 2 -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="pubg">
+                <a href="tournament-details.html?id=pubg-sarawak" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/pubg-2.jpg" alt="PUBG Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">21 August 2026 / 00:00 / PUBG MOBILE</div>
+                            <div class="tourney-title">MEL26 State League - PUBGM Sarawak</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 3000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 4 vs 4</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 45/128</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- PUBG Card 3 -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="pubg">
+                <a href="tournament-details.html?id=pubg-sabah" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/pubg-3.webp" alt="PUBG Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">11 August 2026 / 00:00 / PUBG MOBILE</div>
+                            <div class="tourney-title">MEL26 State League - PUBGM Sabah</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 3000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 4 vs 4</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 112/128</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- LOL Card 1 -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="lol">
+                <a href="tournament-details.html?id=lol-semifinals" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/lol-1.jpg" alt="LoL Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">05 September 2026 / 14:00 / LEAGUE OF LEGENDS</div>
+                            <div class="tourney-title">UTAR Collegiate Championship - Semi Finals</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 5000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 5 vs 5</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 16/16</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- LOL Card 2 -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="lol">
+                <a href="tournament-details.html?id=lol-World Championship 2026" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/lol-2.webp" alt="LoL Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">03 December 2026 / 18:00 / LEAGUE OF LEGENDS</div>
+                            <div class="tourney-title">League of Legends World Championship 2026</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 88888</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 5 vs 5</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 16/16</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Valorant Card -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="valorant">
+                <a href="tournament-details.html?id=valorant-groupa" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/valorant-1.jpg" alt="Valorant Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">12 September 2026 / 10:00 / VALORANT</div>
+                            <div class="tourney-title">VCT Campus Open - Group Stage A</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 1500</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 5 vs 5</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 24/32</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- MLBB Card -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="mlbb">
+                <a href="tournament-details.html?id=mlbb-clash" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/mlbb-1.jpg" alt="MLBB Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">28 August 2026 / 20:00 / MOBILE LEGENDS</div>
+                            <div class="tourney-title">Moonton Student Clash Night</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 1000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 5 vs 5</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 58/64</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- IDV Card -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="identityv">
+                <a href="tournament-details.html?id=idv-abyss" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/idv-1.webp" alt="IDV Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">28 December 2026 / 20:00 / Identity V</div>
+                            <div class="tourney-title">Identity V's Call of the Abyss V </div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 1000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 5 vs 5</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 58/64</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- HOK Card -->
+            <div class="col-12 col-md-6 col-xl-4 tournament-item" data-game-category="hok">
+                <a href="tournament-details.html?id=hok-invi" class="tournament-link">
+                    <div class="tournament-card">
+                        <img src="images/hok-1.jpg" alt="HOK Tournament" class="tournament-banner">
+                        <div class="tournament-body">
+                            <div class="tourney-meta-top">20 August 2026 / 20:00 / Honor of Kings</div>
+                            <div class="tourney-title">Honor of Kings Invitational S1</div>
+                            <div class="tourney-meta-bottom">
+                                <span class="meta-item"><i class="fa-solid fa-coins"></i> 10000</span>
+                                <span class="meta-item"><i class="fa-solid fa-gamepad"></i> 5 vs 5</span>
+                                <span class="meta-item"><i class="fa-solid fa-users"></i> 38/64</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Message shown when no tournaments are found -->
+            <div class="col-12 d-none-custom" id="noTournamentsMsg">
+                <div class="text-center p-5 glass-panel">
+                    <i class="fa-solid fa-ghost fs-1 mb-3" style="color: #a0a5b5;"></i>
+                    <h5 class="text-white">No Tournaments Found</h5>
+                    <p class="mb-0" style="color: #a0a5b5;">There are currently no active tournaments for this game. Check back later!</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- [Shared Footer] -->
+    <footer class="cyber-footer">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3" style="letter-spacing: 1px;">UTAR E-SPORTS CLUB</h5>
+                    <p class="small">The ultimate hub for competitive gamers at Universiti Tunku Abdul Rahman. Join us
+                        to unleash your potential, compete in tournaments, and connect with fellow gamers.</p>
+                </div>
+    
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="index.html"><i class="fa-solid fa-angle-right me-1"></i> Home</a></li>
+                                <li><a href="about.html"><i class="fa-solid fa-angle-right me-1"></i> About</a></li>
+                                <li><a href="teams.html"><i class="fa-solid fa-angle-right me-1"></i> Teams</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="schedule.html"><i class="fa-solid fa-angle-right me-1"></i> Schedule</a></li>
+                                <li><a href="news.html"><i class="fa-solid fa-angle-right me-1"></i> News</a></li>
+                                <li><a href="tournaments.html"><i class="fa-solid fa-angle-right me-1"></i> Join Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="text-white mb-3">Follow Our Socials</h5>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="https://www.facebook.com/UTARnet" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/utarnet1/" target="_blank" rel="noopener noreferrer" class="fs-4"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://discord.com/invite/vMrrDVP" target="_blank" rel="noopener noreferrer" class="fs-4"><i 
+                                class="fa-brands fa-discord"></i></a>
+                        <a href="https://www.youtube.com/@UtarEduMy" target="_blank" rel="noopener noreferrer"
+                            class="fs-4"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                <p class="small mb-0">
+                    <i class="fa-solid fa-envelope me-2"></i>
+                    <span class="text-muted">esportclub.utar@gmail.com</span>
+                </p>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: var(--border-color);">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 small">&copy; 2026 UTAR E-Sports Club. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small text-muted">UCCD2323 Front-End Web Development Assignment</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="js/auth.js" defer></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const $container = $('#gameIconsContainer');
+            const $track = $('#customScrollTrack');
+            const $thumb = $('#customScrollThumb');
+
+            // Optimization: Cache DOM selectors in variables so we don't query the page repeatedly
+            const $gameIconCards = $('.game-icon-card');
+            const $tournamentItems = $('.tournament-item');
+            const $noTournamentsMsg = $('#noTournamentsMsg');
+            const $feedTitle = $('#feedTitle');
+            const $gameSearch = $('#gameSearch');
+            const $resetFilters = $('#resetFilters');
+            const $scrollWrapper = $('.custom-scroll-wrapper');
+
+            let isDragging = false;
+            let startX = 0;
+            let startThumbLeft = 0;
+            let currentThumbX = 0; // Keep track of the thumb's current X position for dragging logic
+
+            function setThumbX(x, animate) {
+                currentThumbX = x;
+                $thumb.css('transition', animate ? 'transform 0.2s ease' : 'none');
+                $thumb.css('transform', 'translateX(' + x + 'px)');
+            }
+
+            // 1. Dynamically update the custom scrollbar thumb's size and position
+            function updateThumb() {
+                const containerEl = $container[0];
+                if (!containerEl) return;
+
+                const scrollWidth = containerEl.scrollWidth;
+                const clientWidth = containerEl.clientWidth;
+                const scrollLeft = containerEl.scrollLeft;
+                const trackWidth = $track.width();
+
+                // Auto-hide the custom scrollbar if the content fits without scrolling
+                if (scrollWidth <= clientWidth + 5) {
+                    $scrollWrapper.hide();
+                    return;
+                } else {
+                    $scrollWrapper.show();
+                }
+
+                // Calculate the width of the thumb based on scroll ratio (minimum 40px)
+                const thumbWidth = Math.max(40, (clientWidth / scrollWidth) * trackWidth);
+                $thumb.css('width', thumbWidth + 'px');
+
+                // Calculate the left offset for the thumb
+                const maxScrollLeft = scrollWidth - clientWidth;
+                const maxThumbLeft = trackWidth - thumbWidth;
+                const thumbLeft = maxScrollLeft > 0 ? (scrollLeft / maxScrollLeft) * maxThumbLeft : 0;
+
+                if (!isDragging) {
+                    setThumbX(thumbLeft, false);
+                }
+            }
+
+            // --- Reset and Filtering Logic ---
+
+            // Logic for the "View All" button
+            $resetFilters.on('click', function(e) {
+                e.preventDefault();
+                $gameIconCards.removeClass('active').show();
+                $feedTitle.text('All Tournaments');
+                $tournamentItems.removeClass('d-none-custom');
+                $noTournamentsMsg.addClass('d-none-custom');
+                $gameSearch.val('');
+                updateThumb();
+            });
+
+            // Filter tournaments when a specific game icon is clicked
+            $gameIconCards.on('click', function() {
+                $gameIconCards.removeClass('active');
+                $(this).addClass('active');
+
+                const selectedGame = $(this).attr('data-game-filter');
+                const gameName = $(this).find('.game-icon-title').text();
+
+                $feedTitle.text(gameName);
+
+                let matchCount = 0;
+                $tournamentItems.each(function() {
+                    if ($(this).attr('data-game-category') === selectedGame) {
+                        $(this).removeClass('d-none-custom');
+                        matchCount++;
+                    } else {
+                        $(this).addClass('d-none-custom');
+                    }
+                });
+
+                if (matchCount === 0) {
+                    $noTournamentsMsg.removeClass('d-none-custom');
+                } else {
+                    $noTournamentsMsg.addClass('d-none-custom');
+                }
+            });
+
+    
+            let searchTimer = null;
+            $gameSearch.on('keyup', function() {
+                clearTimeout(searchTimer);
+                const $input = $(this);
+                searchTimer = setTimeout(function() {
+                    const searchTerm = $input.val().toLowerCase();
+                    $gameIconCards.each(function() {
+                        const gameTitle = $(this).find('.game-icon-title').text().toLowerCase();
+                        $(this).toggle(gameTitle.includes(searchTerm));
+                    });
+                    updateThumb();
+                }, 150);
+            });
+
+            // --- Drag and Scroll Sync Logic ---
+
+            // Update custom thumb position when user scrolls the container normally
+            $container.on('scroll', function() {
+                if (!isDragging) {
+                    updateThumb();
+                }
+            });
+
+            $(window).on('resize', updateThumb);
+            setTimeout(updateThumb, 100); // Slight delay on load to ensure accurate width calculations
+
+            // Start drag event (supports both mouse and touch)
+            $thumb.on('mousedown touchstart', function(e) {
+                isDragging = true;
+                $thumb.css('cursor', 'grabbing');
+                $('body').addClass('is-dragging-scrollbar');
+
+                const pageX = e.type === 'touchstart' ? e.originalEvent.touches[0].pageX : e.pageX;
+                startX = pageX;
+                startThumbLeft = currentThumbX; // Read the previously recorded X position instead of parsing the CSS string
+
+                e.preventDefault();
+            });
+
+            $(document).on('mousemove touchmove', function(e) {
+                if (!isDragging) return;
+
+    
+                e.preventDefault();
+
+                // Calculate how far the mouse/finger has moved
+                const pageX = e.type === 'touchmove' ? e.originalEvent.touches[0].pageX : e.pageX;
+                const deltaX = pageX - startX;
+
+                const trackWidth = $track.width();
+                const thumbWidth = $thumb.width();
+                const maxThumbLeft = trackWidth - thumbWidth;
+
+                let newThumbLeft = startThumbLeft + deltaX;
+                newThumbLeft = Math.max(0, Math.min(newThumbLeft, maxThumbLeft));
+
+                setThumbX(newThumbLeft, false); // Remove CSS transitions during drag so it follows the cursor instantly
+
+                const containerEl = $container[0];
+                const maxScrollLeft = containerEl.scrollWidth - containerEl.clientWidth;
+                const scrollLeft = maxThumbLeft > 0 ? (newThumbLeft / maxThumbLeft) * maxScrollLeft : 0;
+
+                containerEl.scrollLeft = scrollLeft;
+            });
+
+            $(document).on('mouseup touchend touchcancel', function() {
+                if (isDragging) {
+                    // Stop drag process
+                    isDragging = false;
+                    $thumb.css('cursor', 'grab');
+                    $('body').removeClass('is-dragging-scrollbar');
+                }
+            });
+
+            // Move the thumb to where the user clicked on the track
+            $track.on('click', function(e) {
+                if (e.target === $thumb[0]) return;
+
+                const trackOffsetLeft = $track.offset().left;
+                const clickX = e.pageX - trackOffsetLeft;
+                const trackWidth = $track.width();
+                const thumbWidth = $thumb.width();
+
+                let newThumbLeft = clickX - thumbWidth / 2;
+                const maxThumbLeft = trackWidth - thumbWidth;
+                newThumbLeft = Math.max(0, Math.min(newThumbLeft, maxThumbLeft));
+
+                setThumbX(newThumbLeft, true); 
+
+                const containerEl = $container[0];
+                const maxScrollLeft = containerEl.scrollWidth - containerEl.clientWidth;
+                const scrollLeft = maxThumbLeft > 0 ? (newThumbLeft / maxThumbLeft) * maxScrollLeft : 0;
+
+                $container.stop().animate({ scrollLeft: scrollLeft }, 200);
+            });
+        });
+    </script>
+
+    <!-- Cool animated line background implementation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            VANTA.NET({
+                el: "#vanta-bg",
+                mouseControls: false,
+                touchControls: false,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 0.5,
+                color: 0x004d44,
+                backgroundColor: 0x0b0c10,
+                spacing: 25.00,
+                points: 8.00
+            });
+        });
+    </script>
+
+</body>
+</html>
